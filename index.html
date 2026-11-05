@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Personalized Apps by Infinity Sparkle Studios – booking and payment apps for people who run their own business.">
+<meta name="theme-color" content="#1E5B8C">
+<title>Personalized Apps</title>
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+:root{--bg:#F4F7FA;--surface:#fff;--ink:#16212B;--muted:#55636F;--line:#D9E2EA;--brand:#1E5B8C;--brand-ink:#fff;--accent:#F2B705;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--body:"Nunito Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0E151B;--surface:#16212B;--ink:#E8EEF3;--muted:#A7B4BF;--line:#2A3946;--brand:#7FB2DA;--brand-ink:#0E151B}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding:32px 16px 56px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.08;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:1.3rem;margin:0}
+.lead{margin:0;color:var(--muted);font-size:1.05rem;max-width:60ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.card.soon{opacity:.7}
+.tag{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+.btn{font:inherit;font-weight:700;border-radius:12px;padding:11px 16px;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}.btn.accent{background:var(--accent);color:#1A1405}
+ul{margin:0;padding-left:20px;color:var(--muted)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+footer{color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <p class="tag">Infinity Sparkle Studios · Personalized Apps</p>
+    <h1>Your own booking app, in your own name</h1>
+    <p class="lead">For people who run their own business. Your clients book and pay in an app with your name, logo and colours. Your clients' details stay in your own Google account.</p>
+  </header>
+  <div class="grid">
+    <section class="card">
+      <span class="tag">Available now</span>
+      <h2>🐾 Boarding App</h2>
+      <p class="lead" style="font-size:.95rem">For dog boarders and day care: bookings, a calendar of open days, EFT and card payments, extensions and daily photos for pet parents.</p>
+      <div class="btns"><a class="btn accent" href="boarding/?demo=1">Try the demo</a><a class="btn primary" href="boarding/setup.html">Set up my app</a></div>
+    </section>
+    <section class="card soon">
+      <span class="tag">Coming later</span>
+      <h2>More apps</h2>
+      <ul><li>Home bakers</li><li>Hairdressers</li><li>Other people working in their own name</li></ul>
+    </section>
+  </div>
+  <footer>Infinity Sparkle Studios · <a href="https://wa.me/27790400809" style="color:inherit">WhatsApp 079 040 0809</a></footer>
+</div>
+</body>
+</html>

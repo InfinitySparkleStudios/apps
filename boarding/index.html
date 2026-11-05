@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Book a stay for your dog.">
+<meta name="theme-color" content="#5A3216">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bookings">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Booking App</title>
+<script src="brand.js"></script>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
+</head>
+<body>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+:root{
+  /* brand colours (--bg, --brand, --honey …) come from brand.js */
+  --ok:#2F7A4F; --warn:#8A5A06; --full:#B3261E; --busy:#C8962E;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Nunito Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ok:#6CC495; --warn:#E6B15E; --full:#F2918A; --busy:#E2B65E;
+}}
+:root[data-theme="dark"]{
+  --ok:#6CC495; --warn:#E6B15E; --full:#F2918A; --busy:#E2B65E;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.brand{display:flex;gap:14px;align-items:center}
+.paw{width:48px;height:48px;border-radius:14px;background:var(--brand);display:grid;place-items:center;flex:none}
+.paw svg{width:28px;height:28px;fill:var(--brand-ink)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.1;margin:0;text-wrap:balance}
+.tag{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.rates{display:flex;flex-wrap:wrap;gap:8px}
+.rate{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.rate b{font-family:var(--display);font-size:1rem}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px;width:fit-content;max-width:100%}
+.tabs button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--muted);padding:9px 18px;border-radius:8px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+form{display:flex;flex-direction:column;gap:18px}
+fieldset{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:18px;margin:0;display:flex;flex-direction:column;gap:14px;min-width:0}
+legend{font-family:var(--display);font-weight:600;font-size:1.05rem;padding:0 6px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:5px;font-size:.84rem;font-weight:600;color:var(--muted)}
+input,select,textarea{font:inherit;font-weight:400;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%;min-width:0}
+textarea{min-height:64px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--honey);outline-offset:2px}
+.dog{border:1px dashed var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.dog-head{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.linkbtn{font:inherit;font-size:.84rem;background:none;border:0;color:var(--brand);cursor:pointer;font-weight:700;padding:4px}
+.check{flex-direction:row;align-items:flex-start;gap:10px;font-weight:400;color:var(--ink);font-size:.9rem}
+.check input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--brand)}
+.note{background:var(--honey-soft);border-radius:10px;padding:10px 12px;font-size:.86rem;color:var(--ink)}
+.note b{color:var(--warn)}
+.btn{font:inherit;font-weight:700;border-radius:10px;padding:12px 16px;border:0;cursor:pointer;text-align:center;text-decoration:none;display:block}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}
+.btn.honey{background:var(--honey);color:#1A1405}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+aside{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+@media (max-width:860px){aside{position:static}}
+.sum-head{background:var(--brand);color:var(--brand-ink);padding:16px 18px}
+.sum-head small{opacity:.8;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:700}
+.total{font-family:var(--display);font-weight:800;font-size:2.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.sum-body{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.lines{display:flex;flex-direction:column;gap:6px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.line{display:flex;justify-content:space-between;gap:10px}
+.line span:last-child{white-space:nowrap}
+.line.disc{color:var(--ok)}
+.ref{display:flex;justify-content:space-between;align-items:center;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.85rem}
+.ref code{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:.95rem}
+.muted{color:var(--muted);font-size:.84rem;margin:0}
+.err{color:#B3261E;font-size:.85rem;margin:0}
+.pay{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.bank{font-size:.85rem;display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+.bank dt{color:var(--muted)} .bank dd{margin:0;font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.88rem}
+.brand{flex-direction:column;align-items:flex-start;gap:4px}
+.logo{width:min(360px,100%);height:auto;display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+.done{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.done h3{font-family:var(--display);margin:0;font-size:1.15rem}
+.okmark{color:var(--ok);font-weight:700}
+.btn[disabled]{opacity:.55;cursor:progress}
+footer{color:var(--muted);font-size:.8rem;text-align:center}
+.stay{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.stay h2{font-family:var(--display);font-size:1.25rem;margin:0}
+.day-h{font-weight:700;font-size:.9rem;color:var(--muted);margin:4px 0 0}
+.pics{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.pic{margin:0;display:flex;flex-direction:column;gap:4px}
+.pic a{display:block;border-radius:12px;overflow:hidden;background:var(--field);aspect-ratio:1/1}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.pic figcaption{font-size:.84rem;color:var(--ink)}
+.demo{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.demo p{margin:0;font-size:.92rem}.demo b{font-family:var(--display)}
+.demo .btn{background:var(--honey);color:#1A1405;padding:11px 18px;font-size:1rem}
+.demo-fab{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:5;box-shadow:0 6px 20px rgba(0,0,0,.25);background:var(--honey);color:#1A1405;padding:13px 18px;border-radius:999px}
+body.is-demo #b-wa,body.is-demo #e-wa,body.is-demo #p-wa,body.is-demo #b-copy{display:none!important}
+.paused{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.cal{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--field)}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cal-head b{font-family:var(--display);font-size:1rem}
+.cal-nav{font:inherit;font-weight:700;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:8px;width:34px;height:34px;cursor:pointer}
+.cal-nav[disabled]{opacity:.35;cursor:default}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.cal-dow{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.cal-day{font:inherit;border:1px solid transparent;border-radius:8px;padding:6px 0 4px;background:var(--surface);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:44px}
+.cal-day small{font-size:.66rem;color:var(--muted);line-height:1}
+.cal-day.open{background:color-mix(in srgb,var(--ok) 14%,var(--surface))}
+.cal-day.few{background:color-mix(in srgb,var(--busy) 26%,var(--surface))}
+.cal-day.full{background:color-mix(in srgb,var(--full) 18%,var(--surface));color:var(--muted);cursor:not-allowed;text-decoration:line-through}
+.cal-day.past,.cal-day.blank{background:transparent;color:var(--muted);opacity:.45;cursor:default}
+.cal-day.blank{visibility:hidden}
+.cal-day.sel{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand);font-weight:700}
+.cal-key{display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem;color:var(--muted)}
+.cal-key span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+</style>
+
+<div class="wrap">
+  <div class="demo" id="demoBar" hidden>
+    <p><b>Demo – try it out.</b> Nothing is booked or paid. Your own app carries your name, logo, prices and bank details.</p>
+    <a class="btn" href="setup.html">Get my own app →</a>
+  </div>
+  <div class="paused" id="paused" hidden></div>
+  <header>
+    <div class="brand">
+      <img class="logo" id="brandLogo" alt="">
+      <h1 class="sr" data-b="name"></h1>
+      <p class="tag" data-b="tagline"></p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><div class="rates" id="rateChips"></div><button type="button" id="installBtn" class="btn honey" hidden style="padding:8px 14px">Install app</button></div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-book" aria-selected="true">Book a stay</button>
+    <button role="tab" id="tab-extend" aria-selected="false">Extend a stay</button>
+    <button role="tab" id="tab-paid" aria-selected="false">I've paid</button>
+    <button role="tab" id="tab-photos" aria-selected="false">📷 Photos</button>
+  </div>
+
+  <!-- BOOK -->
+  <section id="panel-book" class="grid">
+    <form id="bookForm" novalidate>
+      <fieldset>
+        <legend>Your details</legend>
+        <div class="row">
+          <label>Full name<input id="b-name" autocomplete="name" required></label>
+          <label>Phone (WhatsApp)<input id="b-phone" type="tel" autocomplete="tel" required></label>
+        </div>
+        <div class="row">
+          <label>Email<input id="b-email" type="email" autocomplete="email"></label>
+          <label>Home address<input id="b-address" autocomplete="street-address"></label>
+        </div>
+        <div class="row">
+          <label>Emergency contact name<input id="b-ecname"></label>
+          <label>Emergency contact number<input id="b-ecphone" type="tel"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Dates</legend>
+        <div class="cal" id="cal" hidden>
+          <div class="cal-head"><button type="button" class="cal-nav" id="calPrev" aria-label="Previous month">‹</button><b id="calTitle"></b><button type="button" class="cal-nav" id="calNext" aria-label="Next month">›</button></div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-key"><span style="--c:color-mix(in srgb,var(--ok) 40%,var(--surface))">Open</span><span style="--c:color-mix(in srgb,var(--busy) 55%,var(--surface))">Few places left</span><span style="--c:color-mix(in srgb,var(--full) 45%,var(--surface))">Full</span></div>
+          <p class="muted" id="calHint">Tap a day to choose your check-in, then your check-out.</p>
+        </div>
+        <label>Type of stay<select id="b-type"><option value="nightly">Nightly stay (per night)</option><option value="long">Long stay (monthly price as agreed)</option><option value="daycare">Day care (no overnight stay)</option></select></label>
+        <div id="dayBox" class="dog" hidden>
+          <label>Full or half day<select id="dc-kind"><option value="full">Full day</option><option value="half">Half day</option></select></label>
+          <div id="dc-days" style="display:flex;flex-direction:column;gap:8px"></div>
+          <button type="button" class="btn ghost" id="dc-add">+ Add another day</button>
+          <p class="muted" id="dc-note"></p>
+        </div>
+        <div id="longBox" class="dog" hidden>
+          <div class="row">
+            <label>Agreed price per month (all dogs), R<input id="l-price" type="number" min="0" step="50" inputmode="numeric" placeholder="e.g. 3200"></label>
+            <label>Number of months<select id="l-months"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></label>
+          </div>
+          <label>Extra days after the last full month<input id="l-extra" type="number" min="0" max="29" value="0" inputmode="numeric"></label>
+          <p class="muted">Fill in the monthly price agreed with <span data-b="name"></span>. Extra days are charged pro-rata (monthly price ÷ 30 per day). Each month is paid in advance.</p>
+        </div>
+        <div class="row">
+          <label id="lab-in"><span id="lab-in-t">Check-in date</span><input id="b-in" type="date" required></label>
+          <label><span id="lab-intime-t">Check-in time</span><input id="b-intime" type="time" value="09:00"></label>
+        </div>
+        <div class="row">
+          <label id="lab-out"><span>Check-out date</span><input id="b-out" type="date" required></label>
+          <label><span id="lab-outtime-t">Check-out time</span><input id="b-outtime" type="time" value="16:00"></label>
+        </div>
+        <p class="muted" id="hoursNote" hidden></p>
+        <p class="note" id="festiveNote" hidden></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Pickup &amp; drop-off service</legend>
+        <p class="muted">We can collect your dog(s) and bring them home. The fee is quoted per client, so fill in the amount agreed with <span data-b="name"></span>.</p>
+        <label class="check"><input type="checkbox" id="t-pick"> Please collect my dog(s) at check-in</label>
+        <div class="row" id="t-pickBox" hidden>
+          <label>Agreed pickup fee, R<input id="t-pickFee" type="number" min="0" step="10" inputmode="numeric" placeholder="e.g. 120"></label>
+          <label>Pickup address<input id="t-pickAddr" placeholder="Same as home address"></label>
+        </div>
+        <label class="check"><input type="checkbox" id="t-drop"> Please bring my dog(s) home at check-out</label>
+        <div class="row" id="t-dropBox" hidden>
+          <label>Agreed drop-off fee, R<input id="t-dropFee" type="number" min="0" step="10" inputmode="numeric" placeholder="e.g. 120"></label>
+          <label>Drop-off address<input id="t-dropAddr" placeholder="Same as home address"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Your dogs</legend>
+        <div id="dogs" style="display:flex;flex-direction:column;gap:12px"></div>
+        <button type="button" class="btn ghost" id="addDog">+ Add another dog from the same home</button>
+        <p class="muted">Second and third dogs from the same household get <span id="discTxt"></span> off.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>House rules &amp; agreement</legend>
+        <div id="rulesBox" style="display:flex;flex-direction:column;gap:14px"></div>
+        <p class="muted" id="cancelTxt" hidden></p>
+      </fieldset>
+    </form>
+
+    <aside aria-live="polite">
+      <div class="sum-head">
+        <small id="b-label">Amount due</small>
+        <div class="total" id="b-total">R0</div>
+        <div id="b-nights" style="font-size:.9rem;opacity:.9"></div>
+      </div>
+      <div class="sum-body">
+        <div class="lines" id="b-lines"></div>
+        <div class="ref"><span>Booking reference</span><code id="b-ref"></code></div>
+        <p class="err" id="b-err" hidden></p>
+        <button type="button" class="btn primary" id="b-send" hidden>Confirm booking</button>
+        <a class="btn primary" id="b-wa" target="_blank" rel="noopener">Send booking on WhatsApp</a>
+        <button type="button" class="btn ghost" id="b-copy">Copy booking details</button>
+        <div class="pay" id="b-pay"></div>
+        <div id="b-done" class="done" hidden></div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- EXTEND -->
+  <section id="panel-extend" class="grid" hidden>
+    <form id="extForm" novalidate>
+      <fieldset>
+        <legend>Your booking</legend>
+        <div class="row">
+          <label>Booking reference<input id="e-ref" data-refph placeholder="…"></label>
+          <label>Your name<input id="e-name" autocomplete="name"></label>
+        </div>
+        <div class="row">
+          <label>Dog name(s)<input id="e-dogs"></label>
+          <label>Phone (WhatsApp)<input id="e-phone" type="tel" autocomplete="tel"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>New dates</legend>
+        <div class="row">
+          <label>Current check-out date<input id="e-cur" type="date"></label>
+          <label>New check-out date<input id="e-new" type="date"></label>
+        </div>
+        <div class="row">
+          <label>Small dogs<select id="e-small"><option>0</option><option selected>1</option><option>2</option><option>3</option></select></label>
+          <label>Medium dogs<select id="e-medium"><option selected>0</option><option>1</option><option>2</option><option>3</option></select></label>
+        </div>
+        <label>New check-out time<input id="e-time" type="time" value="16:00"></label>
+        <p class="muted">Extensions depend on availability. We'll confirm on WhatsApp before you pay.</p>
+      </fieldset>
+    </form>
+    <aside aria-live="polite">
+      <div class="sum-head">
+        <small>Extra amount due</small>
+        <div class="total" id="e-total">R0</div>
+        <div id="e-nights" style="font-size:.9rem;opacity:.9"></div>
+      </div>
+      <div class="sum-body">
+        <div class="lines" id="e-lines"></div>
+        <p class="err" id="e-err" hidden></p>
+        <button type="button" class="btn primary" id="e-send" hidden>Send extension request</button>
+        <a class="btn primary" id="e-wa" target="_blank" rel="noopener">Request extension on WhatsApp</a>
+        <div id="e-done" class="done" hidden></div>
+        <div class="pay" id="e-pay"></div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- PHOTOS -->
+  <section id="panel-photos" hidden style="display:flex;flex-direction:column;gap:16px">
+    <div id="photoStays" style="display:flex;flex-direction:column;gap:18px"></div>
+  </section>
+
+  <!-- I'VE PAID -->
+  <section id="panel-paid" class="grid" hidden>
+    <form id="paidForm" novalidate>
+      <fieldset>
+        <legend>Let us know you've paid</legend>
+        <p class="muted">Paid by EFT? Tell us here so we can match it in the bank. Your booking is confirmed once the payment reflects.</p>
+        <div class="row">
+          <label>Booking reference<input id="p-ref" data-refph placeholder="…"></label>
+          <label>Amount paid, R<input id="p-amt" type="number" min="1" step="0.01" inputmode="decimal"></label>
+        </div>
+        <div class="row">
+          <label>Your name<input id="p-name" autocomplete="name"></label>
+          <label>Phone (WhatsApp)<input id="p-phone" type="tel" autocomplete="tel"></label>
+        </div>
+        <div class="row">
+          <label>Date paid<input id="p-date" type="date"></label>
+          <label>Proof of payment (optional)<input id="p-proof" type="file" accept="image/*,application/pdf"></label>
+        </div>
+      </fieldset>
+    </form>
+    <aside aria-live="polite">
+      <div class="sum-head">
+        <small>Payment</small>
+        <div class="total" id="p-total">R0</div>
+        <div id="p-sub" style="font-size:.9rem;opacity:.9"></div>
+      </div>
+      <div class="sum-body">
+        <p class="muted" id="p-note" hidden style="font-weight:700;color:var(--ink)"></p>
+        <p class="err" id="p-err" hidden></p>
+        <button type="button" class="btn primary" id="p-send">Send payment notice</button>
+        <a class="btn ghost" id="p-wa" target="_blank" rel="noopener">Or tell us on WhatsApp</a>
+        <div id="p-done" class="done" hidden></div>
+      </div>
+    </aside>
+  </section>
+
+  <footer><span data-b="name"></span> · <span data-b="phoneDisplay"></span> · <span data-b="footer"></span></footer>
+</div>
+<div class="toast" id="toast" hidden></div>
+<a class="btn demo-fab" id="demoFab" href="setup.html" hidden>Get my own app →</a>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+<script>
+/* ===== Branding comes from brand.js (one file per boarder) ===== */
+const BRAND = window.BRAND || {};
+/* The boarder's own look (name, tagline, colours, logo) from their settings – remembered on this phone */
+function okLogo(u){ return /^https:\/\/[^\s"<>]+$/i.test(u||"") || /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/.test(u||""); }
+function useLook(k){
+  if(!k) return;
+  if(k.name){ BRAND.name=k.name; BRAND.shortName=k.shortName||k.name; }
+  if(typeof k.tagline==="string" && k.tagline) BRAND.tagline=k.tagline;
+  if(okLogo(k.logo)) BRAND.logo={src:k.logo};
+  if(window.applyBrandColors) window.applyBrandColors(k.brand, k.accent);
+}
+try{ useLook(JSON.parse(localStorage.getItem(APP_KEY("brand-look"))||"null")); }catch(e){}
+function applyBrand(){
+  document.title = (BRAND.name||"") + " Bookings";
+  const md=document.querySelector('meta[name="description"]'); if(md&&BRAND.description) md.content=BRAND.description;
+  const at=document.querySelector('meta[name="apple-mobile-web-app-title"]'); if(at&&BRAND.shortName) at.content=BRAND.shortName;
+  const lg=document.getElementById("brandLogo");
+  const h1=document.querySelector("h1[data-b='name']");          // no logo yet: show the business name instead
+  if(h1){ h1.classList.toggle("sr", !!BRAND.logo); h1.style.marginBottom="2px"; }
+  if(lg) lg.hidden=!BRAND.logo;
+  if(lg && BRAND.logo){ lg.src=BRAND.logo.src; if(BRAND.logo.width){ lg.width=BRAND.logo.width; lg.height=BRAND.logo.height; } else { lg.removeAttribute("width"); lg.removeAttribute("height"); } lg.alt=BRAND.name||""; }
+  document.querySelectorAll("[data-b]").forEach(el=>{ el.textContent = BRAND[el.dataset.b] ?? ""; });
+  document.querySelectorAll("[data-refph]").forEach(el=>{ el.placeholder = refPrefix()+"-…"; });
+}
+function refPrefix(){ return String((typeof SETTINGS!=="undefined"&&SETTINGS.refPrefix)||BRAND.refPrefix||"REF").toUpperCase().replace(/[^A-Z]/g,"")||"REF"; }
+</script>
+<script>
+/* ===== SETTINGS — change these to update prices and payments ===== */
+const SETTINGS = {
+  whatsapp: BRAND.whatsapp||"",      // replaced by the boarder's own settings once loaded
+  phoneDisplay: BRAND.phoneDisplay||"",
+  rates:   { small: 200, medium: 250 },      // per night, normal season
+  festive: { from: "12-01", to: "01-10",     // MM-DD, festive season window
+             rates: { small: 200, medium: 250 } }, // raise these when festive prices change
+  // Hours (24h "HH:MM"; blank = no limit) – set on the back office owner form
+  hours: { checkinFrom:"", checkinTo:"", checkoutFrom:"", checkoutTo:"", daycareOpen:"", daycareClose:"", halfDayHours:5 },
+  // House rules – one tick box per rule. Set on the back office owner form
+  rules: [
+    "My dog(s) are up to date on Rabies, DHPP and Bordetella vaccinations.",
+    "I will provide my dog's food, and I have disclosed all behaviour and medical issues above.",
+    "I authorise flea/tick treatment if fleas are found on arrival (Capstar or vet-approved spot-on). Treatment cost is added to my invoice.",
+    `I accept all risks, authorise veterinary care if needed, and understand ${BRAND.name||"the boarder"} takes all reasonable care but is not liable for illness, injury or escape due to unforeseen events.`
+  ],
+  cancellation: "",
+  daycare: { full: { small: 150, medium: 180 },   // per dog per day – change on the back office Settings tab
+             half: { small: 90,  medium: 110 } },
+  familyDiscount: 0.10,              // 2nd & 3rd dog from same home
+  maxDogs: 3,
+  // Back office: Supabase (InfinityCRM project, paws_* tables). Blank url = WhatsApp only
+  supabase: BRAND.supabase||{url:"",key:""},
+  payLink: "",                       // e.g. your Yoco / PayFast / SnapScan link
+  bank: BRAND.bank||null,
+  refPrefix: "",                     // from the boarder's settings (falls back to brand.js)
+  capacity: null                     // most dogs at a time, from the boarder's settings
+};
+/* ================================================================== */
+applyBrand();
+let AVAIL=null, calMonth=null, calPick="in";   // availability calendar
+
+const $ = id => document.getElementById(id);
+const R = n => "R" + Math.round(n).toLocaleString("en-ZA").replace(/,/g," ");
+const SIZE = {small:"Small (under 10 kg)", medium:"Medium (10–25 kg)"};
+/* Demo (…/?demo=1): a test drive for boarders – nothing is saved, no real payment details */
+const DEMO = new URLSearchParams(location.search).has("demo") || (BRAND.hub && !window.APP_SLUG);   // the ISS site without ?b is the demo
+if(DEMO){ document.body.classList.add("is-demo"); $("demoBar").hidden=false; $("demoFab").hidden=false;
+  SETTINGS.bank={bank:"Your bank",name:"Your business name",acc:"Your account number",branch:"Your branch code",type:""}; }
+/* Subscription: ISS sets activeUntil in brand.js; after that date online bookings pause (the boarder's data stays theirs) */
+function pauseApp(title, text){
+  document.querySelectorAll(".tabs, section.grid, #panel-photos").forEach(el=>el.hidden=true);
+  $("paused").hidden=false;
+  $("paused").innerHTML=`<h2 style="margin:0;font-family:var(--display)">${esc(title)}</h2><p class="muted">${esc(text)}</p>`+
+    (SETTINGS.whatsapp||BRAND.whatsapp?`<a class="btn primary" href="https://wa.me/${SETTINGS.whatsapp||BRAND.whatsapp}">Message ${esc(BRAND.shortName||BRAND.name||"us")} on WhatsApp</a>`:"");
+}
+const PAUSED = !DEMO && BRAND.activeUntil && new Date().toISOString().slice(0,10) > BRAND.activeUntil;
+if(PAUSED) pauseApp("Online bookings are paused", `Please contact ${BRAND.name||"us"} directly to book.`);
+
+function iso(d){return d.toISOString().slice(0,10)}
+function parse(s){ if(!s) return null; const [y,m,d]=s.split("-").map(Number); return new Date(Date.UTC(y,m-1,d)); }
+function fmt(s){ const d=parse(s); return d? d.toLocaleDateString("en-ZA",{weekday:"short",day:"numeric",month:"short",year:"numeric",timeZone:"UTC"}):"" }
+function isFestive(d){ const md=iso(d).slice(5); const {from,to}=SETTINGS.festive; return from<=to ? (md>=from&&md<=to) : (md>=from||md<=to); }
+function festiveDiffers(){ const f=SETTINGS.festive.rates, r=SETTINGS.rates; return f.small!==r.small||f.medium!==r.medium; }
+
+/* Price nights between two dates for a list of sizes. Returns lines + total */
+function price(inS,outS,sizes){
+  const a=parse(inS), b=parse(outS);
+  if(!a||!b||b<=a||!sizes.length) return null;
+  const nightsList=[]; for(let d=new Date(a); d<b; d.setUTCDate(d.getUTCDate()+1)) nightsList.push(new Date(d));
+  const fest=nightsList.filter(isFestive).length, norm=nightsList.length-fest;
+  // most expensive dog pays full; others get family discount
+  const order=[...sizes].sort((x,y)=>SETTINGS.rates[y]-SETTINGS.rates[x]);
+  const lines=[]; let total=0;
+  order.forEach((sz,i)=>{
+    const base=norm*SETTINGS.rates[sz] + fest*SETTINGS.festive.rates[sz];
+    lines.push({label:`Dog ${i+1} · ${sz} · ${nightsList.length} night${nightsList.length>1?"s":""}`, amt:base});
+    total+=base;
+    if(i>0){ const d=base*SETTINGS.familyDiscount; lines.push({label:`Family discount ${SETTINGS.familyDiscount*100}%`, amt:-d, disc:true}); total-=d; }
+  });
+  return {nights:nightsList.length, fest, lines, total:Math.round(total)};
+}
+
+function renderLines(el,p){
+  el.innerHTML = p ? p.lines.map(l=>`<div class="line${l.disc?' disc':''}"><span>${l.label}</span><span>${l.amt<0?"−":""}${R(Math.abs(l.amt))}</span></div>`).join("") : '<p class="muted">Choose your dates to see the price.</p>';
+}
+/* Online payments: each boarder registers their own link in Business settings.
+   - Yoco Payment Page (https://pay.yoco.com/<name>): amount + reference filled in, client comes back to "I've paid"
+   - SnapScan (https://pos.snapscan.io/qr/<SnapCode>): amount + reference filled in
+   - any other https link: {amount}, {amount_cents} and {ref} are filled in if the link contains them */
+function payProvider(){
+  try{ const h=new URL(SETTINGS.payLink).hostname;
+    return /(^|\.)pay\.yoco\.com$/.test(h)?"yoco":/(^|\.)snapscan\.io$/.test(h)?"snapscan":/payfast\.co\.za$/.test(h)?"payfast":"other";
+  }catch(e){ return ""; }
+}
+function payWords(){
+  if(SETTINGS.payLabel) return SETTINGS.payLabel;
+  return {yoco:"by card", snapscan:"with SnapScan", payfast:"with PayFast"}[payProvider()]||"online";
+}
+function cardUrl(ref, amount){
+  if(!SETTINGS.payLink || !/^https:\/\//i.test(SETTINGS.payLink)) return "";
+  const amt=(+amount||0), prov=payProvider();
+  try{
+    const filled=SETTINGS.payLink.replace(/\{amount\}/g, amt.toFixed(2)).replace(/\{amount_cents\}/g, String(Math.round(amt*100)))
+      .replace(/\{ref\}/g, encodeURIComponent(ref||""));
+    const u=new URL(filled);
+    if(prov==="yoco"){
+      if(amt>0) u.searchParams.set("amount",amt.toFixed(2));
+      if(ref) u.searchParams.set("reference",ref);
+      const back=new URL(location.href); back.hash=""; back.search="";
+      back.searchParams.set("cardpaid",ref||""); back.searchParams.set("amt",amt.toFixed(2));
+      u.searchParams.set("redirectOnPaymentSuccess",back.toString());
+    } else if(prov==="snapscan"){
+      if(ref) u.searchParams.set("id",ref);
+      if(amt>0) u.searchParams.set("amount",String(Math.round(amt*100)));
+    }
+    return u.toString();
+  }catch(e){ return ""; }
+}
+function cardBtn(ref, amount, label){
+  const u=cardUrl(ref, amount); if(!u) return "";
+  const same=payProvider()==="yoco";   // Yoco brings the client back by itself; others open in a new tab
+  return `<a class="btn honey" data-card href="${u}" rel="noopener" ${same?"":'target="_blank"'} ${amount?'':'aria-disabled="true"'}>${label||"Pay"} ${R(amount)} ${esc(payWords())}</a>`;
+}
+function payBlock(el,amount,ref,label,extraHtml){
+  let h=`<p class="muted" style="font-weight:700;color:var(--ink)">Pay now · use reference <code>${ref}</code></p>`+(extraHtml||"");
+  h+=cardBtn(ref, amount, label);
+  if(SETTINGS.bank){ const b=SETTINGS.bank;
+    h+=`<dl class="bank"><dt>Bank</dt><dd>${b.bank}</dd><dt>Account name</dt><dd>${b.name}</dd><dt>Account no.</dt><dd>${b.acc}</dd><dt>Branch code</dt><dd>${b.branch}</dd><dt>Type</dt><dd>${b.type||""}</dd><dt>Reference</dt><dd>${ref}</dd></dl>`;
+  }
+  if(!cardUrl(ref,amount) && !SETTINGS.bank) h+=`<p class="muted">Payment details are sent with your WhatsApp confirmation. Please pay before drop-off.</p>`;
+  el.innerHTML=h;
+}
+function waLink(text){ return `https://wa.me/${SETTINGS.whatsapp}?text=${encodeURIComponent(text)}`; }
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2200); }
+
+/* ---------- header chips ---------- */
+renderChips();
+
+/* ---------- dogs ---------- */
+let dogCount=0;
+function addDog(){
+  if(dogCount>=SETTINGS.maxDogs) return;
+  dogCount++; const n=dogCount;
+  const d=document.createElement("div"); d.className="dog"; d.dataset.n=n;
+  d.innerHTML=`<div class="dog-head"><span>Dog ${n}</span>${n>1?'<button type="button" class="linkbtn" data-remove>Remove</button>':''}</div>
+  <div class="row"><label>Name<input id="d${n}-name" required></label>
+  <label>Size<select id="d${n}-size"><option value="small">${SIZE.small}</option><option value="medium">${SIZE.medium}</option></select></label></div>
+  <div class="row"><label>Breed<input id="d${n}-breed"></label>
+  <label>Age<input id="d${n}-age" placeholder="e.g. 4 years"></label></div>
+  <div class="row"><label>Sex<select id="d${n}-sex"><option>Female</option><option>Male</option></select></label>
+  <label>Sterilised<select id="d${n}-ster"><option>Yes</option><option>No</option></select></label></div>
+  <label>Last vaccination date<input id="d${n}-vacc" type="date"></label>
+  <label>Medical conditions / allergies<textarea id="d${n}-med"></textarea></label>
+  <label>Feeding instructions<textarea id="d${n}-feed"></textarea></label>
+  <label>Behaviour notes<textarea id="d${n}-beh"></textarea></label>`;
+  $("dogs").appendChild(d);
+  d.querySelectorAll("input,select,textarea").forEach(x=>x.addEventListener("input",updateBook));
+  const rm=d.querySelector("[data-remove]"); if(rm) rm.onclick=()=>{d.remove(); renumber(); updateBook();};
+  $("addDog").hidden = dogCount>=SETTINGS.maxDogs;
+  updateBook();
+}
+function renumber(){ dogCount=$("dogs").children.length; $("addDog").hidden = dogCount>=SETTINGS.maxDogs; }
+function dogs(){ return [...$("dogs").children].map(el=>{const n=el.dataset.n,g=k=>($(`d${n}-${k}`)||{}).value||""; return {name:g("name").trim(),size:g("size"),breed:g("breed"),age:g("age"),sex:g("sex"),ster:g("ster"),vacc:g("vacc"),med:g("med"),feed:g("feed"),beh:g("beh")};}); }
+
+/* ---------- house rules & hours (from the owner form) ---------- */
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function renderRules(){
+  const box=$("rulesBox"), was=[...box.querySelectorAll("input")].map(x=>x.checked);
+  box.innerHTML=SETTINGS.rules.map((r,i)=>`<label class="check"><input type="checkbox" id="c-r${i}"${was[i]?" checked":""}> ${esc(r)}</label>`).join("");
+  box.querySelectorAll("input").forEach(x=>x.addEventListener("change",updateBook));
+  $("cancelTxt").hidden=!SETTINGS.cancellation; $("cancelTxt").innerHTML=SETTINGS.cancellation?`<b>Cancellation policy:</b> ${esc(SETTINGS.cancellation)}`:"";
+}
+const H=()=>SETTINGS.hours||{};
+function between(t,a,b){ return !t || ((!a||t>=a) && (!b||t<=b)); }
+function rangeTxt(a,b){ return a&&b?`${a}–${b}`:a?`from ${a}`:b?`until ${b}`:""; }
+function hoursNote(){
+  const h=H(), parts=[];
+  if(isDay()){ const r=rangeTxt(h.daycareOpen,h.daycareClose); if(r) parts.push(`Day care hours ${r}`); if($("dc-kind").value==="half"&&h.halfDayHours) parts.push(`half day = up to ${h.halfDayHours} hours`); }
+  else { const a=rangeTxt(h.checkinFrom,h.checkinTo), b=rangeTxt(h.checkoutFrom,h.checkoutTo); if(a) parts.push(`Check-in ${a}`); if(b) parts.push(`Check-out ${b}`); }
+  return parts.join(" · ");
+}
+function hoursMissing(){
+  const h=H(), m=[], tin=$("b-intime").value, tout=$("b-outtime").value;
+  if(isDay()){
+    if(!between(tin,h.daycareOpen,h.daycareClose)||!between(tout,h.daycareOpen,h.daycareClose)) m.push(`times within day care hours (${rangeTxt(h.daycareOpen,h.daycareClose)})`);
+    if($("dc-kind").value==="half"&&h.halfDayHours&&tin&&tout){ const [a,b]=[tin,tout].map(t=>{const[x,y]=t.split(":").map(Number);return x*60+y}); if(b-a>h.halfDayHours*60) m.push(`a half day of ${h.halfDayHours} hours or less (or choose full day)`); }
+  } else {
+    if(!between(tin,h.checkinFrom,h.checkinTo)) m.push(`a check-in time ${rangeTxt(h.checkinFrom,h.checkinTo)}`);
+    if(!between(tout,h.checkoutFrom,h.checkoutTo)) m.push(`a check-out time ${rangeTxt(h.checkoutFrom,h.checkoutTo)}`);
+  }
+  return m;
+}
+
+/* ---------- reference ---------- */
+function makeRef(){ const a=$("b-in").value.replace(/-/g,"").slice(2)||"000000"; const nm=(dogs()[0]?.name||"DOG").replace(/[^A-Za-z]/g,"").slice(0,4).toUpperCase()||"DOG"; return `${refPrefix()}-${a}-${nm}`; }
+
+/* ---------- booking ---------- */
+/* Pickup & drop-off: quoted per client */
+function transport(){
+  const t={lines:[],pick:0,drop:0,missing:[]};
+  $("t-pickBox").hidden=!$("t-pick").checked; $("t-dropBox").hidden=!$("t-drop").checked;
+  const home=$("b-address").value.trim();
+  if($("t-pick").checked){ t.pick=Math.round(parseFloat($("t-pickFee").value)||0); t.pickAddr=$("t-pickAddr").value.trim()||home;
+    if(!t.pick) t.missing.push("the agreed pickup fee"); if(!t.pickAddr) t.missing.push("the pickup address");
+    t.lines.push({label:"Pickup service", amt:t.pick}); }
+  if($("t-drop").checked){ t.drop=Math.round(parseFloat($("t-dropFee").value)||0); t.dropAddr=$("t-dropAddr").value.trim()||home;
+    if(!t.drop) t.missing.push("the agreed drop-off fee"); if(!t.dropAddr) t.missing.push("the drop-off address");
+    t.lines.push({label:"Drop-off service", amt:t.drop}); }
+  return t;
+}
+function withTransport(p){
+  if(!p) return p; const t=transport();
+  return {...p, lines:[...p.lines,...t.lines], total:p.total+t.pick+t.drop, transport:t};
+}
+
+/* Day care: full or half day, one or more single days, price per dog per day */
+function isDay(){ return $("b-type").value==="daycare"; }
+let dcCount=0;
+function addDcDay(val){
+  if($("dc-days").children.length>=20) return;
+  dcCount++; const n=dcCount, row=document.createElement("div"); row.className="row"; row.dataset.n=n;
+  row.innerHTML=`<label>Day<input type="date" id="dc-d${n}"></label>${$("dc-days").children.length?'<button type="button" class="linkbtn" style="align-self:end" data-rm>Remove day</button>':''}`;
+  $("dc-days").appendChild(row);
+  const inp=$("dc-d"+n); if(val) inp.value=val; inp.min=$("b-in").min; inp.addEventListener("input",updateBook);
+  const rm=row.querySelector("[data-rm]"); if(rm) rm.onclick=()=>{ row.remove(); updateBook(); };
+  $("dc-add").hidden=$("dc-days").children.length>=20;
+}
+function dcDays(){ return [...new Set([...$("dc-days").querySelectorAll("input")].map(i=>i.value).filter(Boolean))].sort(); }
+function daycarePrice(){
+  const days=dcDays(), kind=$("dc-kind").value, ds=dogs(); if(!days.length||!ds.length) return null;
+  const rate=SETTINGS.daycare[kind], order=ds.map(d=>d.size).sort((x,y)=>rate[y]-rate[x]);
+  const word=kind==="full"?"full":"half"; const lines=[]; let total=0;
+  order.forEach((sz,i)=>{ const base=days.length*rate[sz];
+    lines.push({label:`Dog ${i+1} · ${sz} · ${days.length} ${word} day${days.length>1?"s":""} × ${R(rate[sz])}`, amt:base}); total+=base;
+    if(i>0){ const d=base*SETTINGS.familyDiscount; lines.push({label:`Family discount ${Math.round(SETTINGS.familyDiscount*100)}%`, amt:-d, disc:true}); total-=d; } });
+  return withTransport({daycare:true, kind, days, lines, total:Math.round(total)});
+}
+function updateDaycare(){
+  const ds=dogs(), p=daycarePrice();
+  renderLines($("b-lines"),p);
+  if(!p) $("b-lines").innerHTML='<p class="muted">Choose your day(s) to see the price.</p>';
+  $("b-total").textContent=R(p?p.total:0);
+  $("b-nights").textContent=p?`Day care · ${p.days.length} ${p.kind} day${p.days.length>1?"s":""} · ${ds.length} dog${ds.length>1?"s":""}`:"Day care";
+  const ref=makeRef()+"-DC"; $("b-ref").textContent=ref;
+  $("festiveNote").hidden=true;
+  const miss=bookMissing(ds,p), err=$("b-err");
+  if(miss.length){ err.hidden=false; err.textContent="Still needed: "+miss.join(", ")+"."; $("b-wa").setAttribute("aria-disabled","true"); $("b-wa").removeAttribute("href"); }
+  else { err.hidden=true; $("b-wa").removeAttribute("aria-disabled"); $("b-wa").href=waLink(bookText(ds,p,ref)); }
+  payBlock($("b-pay"),p?p.total:0,ref);
+}
+
+/* Long stay: agreed monthly price for all dogs, plus pro-rata extra days */
+function isLong(){ return $("b-type").value==="long"; }
+function addMonths(s,n,days){ const d=parse(s); if(!d) return null; const day=d.getUTCDate(); d.setUTCMonth(d.getUTCMonth()+n); if(d.getUTCDate()<day) d.setUTCDate(0); d.setUTCDate(d.getUTCDate()+(days||0)); return d; }
+function longPrice(){
+  const M=parseFloat($("l-price").value)||0, n=+$("l-months").value, e=Math.max(0,Math.min(29,parseInt($("l-extra").value)||0));
+  if(!M||!$("b-in").value) return null;
+  const lines=[{label:`Long stay · ${n} month${n>1?"s":""} × ${R(M)}`, amt:M*n}];
+  if(e) lines.push({label:`Extra ${e} day${e>1?"s":""} (pro-rata ${R(M/30)}/day)`, amt:e*M/30});
+  const total=Math.round(M*n+e*M/30);
+  const sched=[]; for(let i=0;i<n;i++) sched.push({due:iso(addMonths($("b-in").value,i,0)), amt:M, label:`Month ${i+1}`});
+  if(e) sched.push({due:iso(addMonths($("b-in").value,n,0)), amt:Math.round(e*M/30), label:`Extra ${e} days`});
+  const t=transport();
+  if(t.pick){ lines.push(t.lines.find(l=>l.label.startsWith("Pickup"))); sched[0].amt+=t.pick; sched[0].label+=" + pickup"; }
+  if(t.drop){ lines.push(t.lines.find(l=>l.label.startsWith("Drop"))); const last=sched[sched.length-1]; last.amt+=t.drop; last.label+=" + drop-off"; }
+  return {long:true, months:n, extra:e, monthly:M, lines, total:total+t.pick+t.drop, sched, first:sched[0].amt, transport:t};
+}
+function syncType(){
+  const L=isLong(), D=isDay(); $("longBox").hidden=!L; $("dayBox").hidden=!D; $("b-out").readOnly=L;
+  $("lab-in").hidden=D; $("lab-out").hidden=D;
+  $("lab-intime-t").textContent=D?"Drop-off time":"Check-in time"; $("lab-outtime-t").textContent=D?"Collection time":"Check-out time";
+  if(D){ if(!$("dc-days").children.length) addDcDay($("b-in").value); const days=dcDays(); if(days.length){ $("b-in").value=days[0]; $("b-out").value=days[days.length-1]; }
+    $("dc-note").textContent=`Full day ${R(SETTINGS.daycare.full.small)} (small) / ${R(SETTINGS.daycare.full.medium)} (medium) · Half day ${R(SETTINGS.daycare.half.small)} / ${R(SETTINGS.daycare.half.medium)} per dog per day.`; }
+  if(L){ const d=addMonths($("b-in").value,+$("l-months").value,parseInt($("l-extra").value)||0); if(d) $("b-out").value=iso(d); }
+}
+
+function updateBook(){
+  syncType(); if(AVAIL) renderCal();
+  const hn=hoursNote(); $("hoursNote").hidden=!hn; $("hoursNote").textContent=hn?("Our hours: "+hn):"";
+  $("b-label").textContent = isLong()? "Total for long stay" : "Amount due";
+  if(isLong()) return updateLong();
+  if(isDay()) return updateDaycare();
+  const ds=dogs(), p=withTransport(price($("b-in").value,$("b-out").value,ds.map(d=>d.size)));
+  renderLines($("b-lines"),p);
+  $("b-total").textContent=R(p?p.total:0);
+  $("b-nights").textContent = p ? `${p.nights} night${p.nights>1?"s":""} · ${ds.length} dog${ds.length>1?"s":""}` : "";
+  const ref=makeRef(); $("b-ref").textContent=ref;
+  // festive note
+  const fn=$("festiveNote");
+  if(p && p.fest){ fn.hidden=false; fn.innerHTML = festiveDiffers()? `<b>Festive season:</b> ${p.fest} of your nights fall in the festive period and are charged at festive rates.` : `<b>Festive season:</b> ${p.fest} of your nights fall over the festive period. Space is limited, so book early. Our festive flea &amp; tick policy applies.`; }
+  else fn.hidden=true;
+  // validation
+  const miss=bookMissing(ds,p);
+  const err=$("b-err");
+  if(miss.length){ err.hidden=false; err.textContent="Still needed: "+miss.join(", ")+"."; $("b-wa").setAttribute("aria-disabled","true"); $("b-wa").removeAttribute("href"); }
+  else { err.hidden=true; $("b-wa").removeAttribute("aria-disabled"); $("b-wa").href=waLink(bookText(ds,p,ref)); }
+  payBlock($("b-pay"),p?p.total:0,ref);
+}
+function bookMissing(ds,p){
+  const miss=[];
+  if(!$("b-name").value.trim()) miss.push("your name");
+  if(!$("b-phone").value.trim()) miss.push("your phone number");
+  if(isLong()&&!(parseFloat($("l-price").value)>0)) miss.push("the agreed monthly price");
+  if(!p) miss.push(isLong()?"a check-in date":isDay()?"at least one day":"check-in and check-out dates");
+  if(ds.some(d=>!d.name)) miss.push("each dog's name");
+  miss.push(...transport().missing);
+  miss.push(...hoursMissing());
+  const full=fullDays(ds.length); if(full.length) miss.push(`other dates – we're full on ${full.slice(0,3).map(fmt).join(", ")}${full.length>3?" and more":""}`);
+  const ticks=[...$("rulesBox").querySelectorAll("input")]; if(ticks.some(x=>!x.checked)) miss.push(ticks.length>1?"all the house-rule ticks":"the house-rule tick");
+  return miss;
+}
+function updateLong(){
+  const ds=dogs(), p=longPrice();
+  renderLines($("b-lines"),p);
+  if(!p) $("b-lines").innerHTML='<p class="muted">Enter the agreed monthly price and check-in date to see the total.</p>';
+  $("b-total").textContent=R(p?p.total:0);
+  $("b-nights").textContent=p?`Long stay · ${p.months} month${p.months>1?"s":""}${p.extra?` + ${p.extra} days`:""} · ${ds.length} dog${ds.length>1?"s":""}`:"Long stay";
+  const ref=makeRef()+"-LS"; $("b-ref").textContent=ref;
+  $("festiveNote").hidden=true;
+  const miss=bookMissing(ds,p), err=$("b-err");
+  if(miss.length){ err.hidden=false; err.textContent="Still needed: "+miss.join(", ")+"."; $("b-wa").setAttribute("aria-disabled","true"); $("b-wa").removeAttribute("href"); }
+  else { err.hidden=true; $("b-wa").removeAttribute("aria-disabled"); $("b-wa").href=waLink(bookText(ds,p,ref)); }
+  const sched = p ? `<div class="lines">${p.sched.map(s=>`<div class="line"><span>${s.label} · due ${fmt(s.due)}</span><span>${R(s.amt)}</span></div>`).join("")}</div>` : "";
+  payBlock($("b-pay"),p?p.first:0,ref,"Pay first month",sched);
+}
+function currentBook(){ const ds=dogs(); return {ds, p: isLong()? longPrice() : isDay()? daycarePrice() : withTransport(price($("b-in").value,$("b-out").value,ds.map(d=>d.size))), ref: makeRef()+(isLong()?"-LS":isDay()?"-DC":"")}; }
+function bookText(ds,p,ref){
+  const L=[`🐾 NEW BOOKING – ${BRAND.name}`,`Ref: ${ref}`,``,
+  `Owner: ${$("b-name").value}`,`Phone: ${$("b-phone").value}`];
+  if($("b-email").value) L.push(`Email: ${$("b-email").value}`);
+  if($("b-address").value) L.push(`Address: ${$("b-address").value}`);
+  if($("b-ecname").value||$("b-ecphone").value) L.push(`Emergency: ${$("b-ecname").value} ${$("b-ecphone").value}`);
+  if(p.daycare) L.push(``,`DAY CARE – ${p.kind==="full"?"Full day":"Half day"}`,`Days: ${p.days.map(fmt).join("; ")}`,`Drop-off ${$("b-intime").value} · Collection ${$("b-outtime").value}`);
+  else L.push(``,`Check-in: ${fmt($("b-in").value)} ${$("b-intime").value}`,`Check-out: ${fmt($("b-out").value)} ${$("b-outtime").value}`);
+  const tr=p.transport||{}; if(tr.pick) L.push(`🚗 PICKUP at check-in from: ${tr.pickAddr} (agreed ${R(tr.pick)})`); if(tr.drop) L.push(`🚗 DROP-OFF at check-out to: ${tr.dropAddr} (agreed ${R(tr.drop)})`);
+  L.push(``);
+  ds.forEach((d,i)=>{ L.push(`Dog ${i+1}: ${d.name} (${d.size}${d.breed?", "+d.breed:""}${d.age?", "+d.age:""}, ${d.sex}, sterilised: ${d.ster})`);
+    if(d.vacc) L.push(`  Last vaccination: ${fmt(d.vacc)}`); if(d.med) L.push(`  Medical: ${d.med}`); if(d.feed) L.push(`  Feeding: ${d.feed}`); if(d.beh) L.push(`  Behaviour: ${d.beh}`); });
+  L.push(``); if(p.long) L.push(`STAY TYPE: Long stay – agreed ${R(p.monthly)} per month (all dogs)`);
+  p.lines.forEach(l=>L.push(`${l.label}: ${l.amt<0?"-":""}${R(Math.abs(l.amt))}`));
+  L.push(`TOTAL: ${R(p.total)}`);
+  if(p.long){ L.push(``,`Payment schedule (monthly in advance):`); p.sched.forEach(s=>L.push(`  ${s.label} – ${fmt(s.due)}: ${R(s.amt)}`)); L.push(`DUE NOW: ${R(p.first)}`); }
+  L.push(``,`✔ House rules accepted (${SETTINGS.rules.length})`);
+  return L.join("\n");
+}
+$("b-copy").onclick=()=>{
+  const {ds,p,ref}=currentBook();
+  if(!p){ toast(isLong()?"Enter the monthly price and check-in date first":"Choose your dates first"); return; }
+  const txt=bookText(ds,p,ref);
+  navigator.clipboard.writeText(txt).then(()=>toast("Booking details copied")).catch(()=>toast("Copy blocked here. Use the WhatsApp button instead"));
+};
+
+/* ---------- extension ---------- */
+function updateExt(){
+  const sizes=[...Array(+$("e-small").value).fill("small"),...Array(+$("e-medium").value).fill("medium")];
+  const p=price($("e-cur").value,$("e-new").value,sizes);
+  renderLines($("e-lines"),p);
+  $("e-total").textContent=R(p?p.total:0);
+  $("e-nights").textContent=p?`${p.nights} extra night${p.nights>1?"s":""}`:"";
+  const ref=($("e-ref").value.trim()||refPrefix())+"-EXT";
+  const miss=[]; if(!$("e-name").value.trim()) miss.push("your name"); if(!$("e-dogs").value.trim()) miss.push("dog name(s)"); if(!p) miss.push("a new check-out date after the current one");
+  const err=$("e-err");
+  if(miss.length){ err.hidden=false; err.textContent="Still needed: "+miss.join(", ")+"."; $("e-wa").setAttribute("aria-disabled","true"); $("e-wa").removeAttribute("href"); }
+  else { err.hidden=true; $("e-wa").removeAttribute("aria-disabled");
+    const L=[`🐾 EXTEND STAY – ${BRAND.name}`,`Booking ref: ${$("e-ref").value||"(not given)"}`,`Owner: ${$("e-name").value}`,`Phone: ${$("e-phone").value}`,`Dogs: ${$("e-dogs").value}`,``,
+      `Current check-out: ${fmt($("e-cur").value)}`,`New check-out: ${fmt($("e-new").value)} ${$("e-time").value}`,``];
+    p.lines.forEach(l=>L.push(`${l.label}: ${l.amt<0?"-":""}${R(Math.abs(l.amt))}`)); L.push(`EXTRA DUE: ${R(p.total)}`,`Payment ref: ${ref}`);
+    $("e-wa").href=waLink(L.join("\n")); }
+  payBlock($("e-pay"),p?p.total:0,ref);
+}
+
+/* ---------- back office ----------
+   Two kinds, chosen in brand.js:
+   - Google (the standard plan): the boarder's own Google Sheet + Apps Script web app (BRAND.google.url)
+   - Supabase (the upgrade, and Paws Relax Retreat): BRAND.supabase */
+let GOOGLE = (BRAND.google && /^https:\/\/script\.google\.com\//.test(BRAND.google.url||"")) ? BRAND.google.url : "";
+let _sb=null;
+function sb(){ if(_sb) return _sb; const c=SETTINGS.supabase; if(GOOGLE||!c||!c.url||!window.supabase) return null;
+  _sb=window.supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false}}); return _sb; }
+const API = () => DEMO || !!GOOGLE || !!sb();
+const RPC = {booking:"paws_submit_booking", extension:"paws_submit_extension", payment:"paws_submit_payment"};
+async function gget(params){
+  const r=await fetch(GOOGLE+"?"+new URLSearchParams(params)); const j=await r.json();
+  if(!j.ok) throw new Error(j.error||"Could not load"); return j;
+}
+async function api(action, data){
+  if(DEMO){ await new Promise(r=>setTimeout(r,600));
+    if(action==="payment") return {ok:true,id:"DEMO"};
+    const p=action==="booking"?currentBook().p:null;
+    return {ok:true, ref:(data.ref||refPrefix()+"-DEMO"), total:p?p.total:0, dueNow:p?(p.first||p.total):0}; }
+  if(GOOGLE){
+    // text/plain avoids a CORS pre-flight, which Apps Script does not answer
+    const r=await fetch(GOOGLE,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({action},data))});
+    const j=await r.json(); if(!j.ok) throw new Error(j.error||"Could not save"); return j;
+  }
+  const {data:res, error} = await sb().rpc(RPC[action], {p:data});
+  if(error) throw new Error((error.message||"Could not save").replace(/^.*?:\s*/,"") );
+  return res;
+}
+async function getSettings(){ if(GOOGLE) return (await gget({action:"settings"})).settings;
+  const {data, error}=await sb().rpc("paws_public_settings"); if(error) throw error; return data; }
+async function getAvailability(){ if(GOOGLE) return await gget({action:"availability", days:120});
+  const {data, error}=await sb().rpc("paws_public_availability",{p_from:null, p_days:120}); if(error) throw error; return data; }
+function fileData(f){ return new Promise((ok,no)=>{ const r=new FileReader(); r.onload=()=>ok({data:String(r.result), type:f.type, name:f.name}); r.onerror=()=>no(new Error("Could not read the file")); r.readAsDataURL(f); }); }
+async function uploadProof(f){
+  const ext=(f.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,5)||"jpg";
+  const path=`proofs/${(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2))}.${ext}`;
+  const {error}=await sb().storage.from("paws-proofs").upload(path,f,{contentType:f.type||undefined,upsert:false});
+  if(error) throw new Error("Could not upload the proof of payment ("+error.message+")");
+  return path;
+}
+function busy(btn,on,label){ btn.disabled=on; if(on){btn.dataset.l=btn.textContent; btn.textContent=label||"Sending…";} else if(btn.dataset.l) btn.textContent=btn.dataset.l; }
+function bankHtml(ref){
+  const b=SETTINGS.bank; if(!b) return `<p class="muted">Our bank details are sent with your WhatsApp confirmation.</p>`;
+  return `<dl class="bank"><dt>Bank</dt><dd>${b.bank}</dd><dt>Account name</dt><dd>${b.name}</dd><dt>Account no.</dt><dd>${b.acc}</dd><dt>Branch code</dt><dd>${b.branch}</dd>${b.type?`<dt>Type</dt><dd>${b.type}</dd>`:""}<dt>Reference</dt><dd>${ref}</dd></dl><p class="muted">Please use this reference exactly. It starts with <b>${refPrefix()}</b> so we can match your payment.</p>`;
+}
+let paidMethod="eft";
+function goPaid(ref, amount){
+  $("p-ref").value=ref||""; $("p-amt").value=amount||"";
+  if(!$("p-name").value) $("p-name").value=$("b-name").value||$("e-name").value;
+  if(!$("p-phone").value) $("p-phone").value=$("b-phone").value||$("e-phone").value;
+  show("paid"); updatePaid(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function doneBlock(el, title, ref, amount, note){
+  el.hidden=false;
+  el.innerHTML=`<h3>${title}</h3><p class="muted">Reference <b><code>${ref}</code></b>. ${note}</p>
+    ${cardUrl(ref,amount)?`<p class="muted" style="font-weight:700;color:var(--ink)">Pay ${R(amount)} ${esc(payWords())}</p>${cardBtn(ref, amount)}<p class="muted">Or pay by EFT:</p>`:`<p class="muted" style="font-weight:700;color:var(--ink)">Pay ${R(amount)} by EFT</p>`}${bankHtml(ref)}
+    <button type="button" class="btn honey" data-paid>I've paid – let ${esc(BRAND.shortName||"us")} know</button>`;
+  if(DEMO) el.insertAdjacentHTML("beforeend",`<p class="note"><b>That's it!</b> In your own app this booking would now be in your Google Sheet and on your WhatsApp.</p><a class="btn primary" href="setup.html">Get my own app →</a>`);
+  el.querySelector("[data-paid]").onclick=()=>goPaid(ref, amount);
+  const cb=el.querySelector("[data-card]"); if(cb) cb.addEventListener("click",()=>{ paidMethod="card"; });
+}
+
+function bookingPayload(){
+  const ds=dogs(), long=isLong(), day=isDay(), t=transport(), lp=long?longPrice():null;
+  return {ref:makeRef()+(long?"-LS":day?"-DC":""), type:long?"long":day?"daycare":"nightly",
+    daycare: day? {kind:$("dc-kind").value, days:dcDays()} : null,
+    rules: SETTINGS.rules,
+    name:$("b-name").value.trim(), phone:$("b-phone").value.trim(), email:$("b-email").value.trim(), address:$("b-address").value.trim(),
+    ecname:$("b-ecname").value.trim(), ecphone:$("b-ecphone").value.trim(),
+    checkIn:$("b-in").value, inTime:$("b-intime").value, checkOut:$("b-out").value, outTime:$("b-outtime").value,
+    dogs:ds, transport:{pick:t.pick, pickAddr:t.pickAddr||"", drop:t.drop, dropAddr:t.dropAddr||""},
+    long: long? {monthly:lp?lp.monthly:0, months:+$("l-months").value, extra:parseInt($("l-extra").value)||0} : null};
+}
+$("b-send").onclick=async()=>{
+  const btn=$("b-send"); busy(btn,true,"Saving your booking…");
+  try{
+    const r=await api("booking", bookingPayload());
+    if(r.photoToken) rememberStay({token:r.photoToken, ref:r.ref});
+    $("b-ref").textContent=r.ref; $("b-total").textContent=R(r.total);
+    ["b-send","b-wa","b-copy"].forEach(id=>$(id).hidden=true); $("b-pay").hidden=true;
+    doneBlock($("b-done"),"Booking received 🐾", r.ref, r.dueNow,
+      `Your booking is reserved. It's confirmed once your payment reflects in our account.${isLong()?" Each month is paid in advance.":""} During the stay you'll find daily photos under 📷 Photos.`);
+    toast("Booking received");
+  }catch(e){ toast(e.message+". You can send it on WhatsApp instead."); }
+  finally{ busy(btn,false); }
+};
+$("e-send").onclick=async()=>{
+  const btn=$("e-send"); busy(btn,true);
+  try{
+    const r=await api("extension",{ref:$("e-ref").value.trim(), name:$("e-name").value.trim(), phone:$("e-phone").value.trim(), dogs:$("e-dogs").value.trim(),
+      curOut:$("e-cur").value, newOut:$("e-new").value, time:$("e-time").value, small:+$("e-small").value, medium:+$("e-medium").value});
+    ["e-send","e-wa"].forEach(id=>$(id).hidden=true); $("e-pay").hidden=true;
+    doneBlock($("e-done"),"Extension requested", r.ref, r.dueNow, "We'll confirm availability on WhatsApp. Please pay once we've confirmed.");
+  }catch(e){ toast(e.message+". You can send it on WhatsApp instead."); }
+  finally{ busy(btn,false); }
+};
+
+/* ---------- I've paid ---------- */
+function updatePaid(){
+  const amt=parseFloat($("p-amt").value)||0, ref=$("p-ref").value.trim();
+  $("p-total").textContent=R(amt); $("p-sub").textContent=ref?("Reference "+ref):"";
+  const miss=[]; if(!ref) miss.push("your booking reference"); if(!amt) miss.push("the amount paid"); if(!$("p-name").value.trim()) miss.push("your name");
+  const f=$("p-proof").files[0]; if(f && f.size>5*1024*1024) miss.push("a smaller proof file (max 5 MB)");
+  const err=$("p-err"); err.hidden=!miss.length; err.textContent=miss.length?"Still needed: "+miss.join(", ")+".":"";
+  $("p-send").disabled=!!miss.length || !API(); $("p-send").hidden=!API();
+  const txt=[`💰 PAYMENT MADE – ${BRAND.name}`,`Booking ref: ${ref}`,`Name: ${$("p-name").value}`,`Amount: ${R(amt)}`,`Date paid: ${fmt($("p-date").value)}`, paidMethod==="card"?`Paid ${payWords()}`:`(Proof of payment attached separately)`].join("\n");
+  const wa=$("p-wa"), basics=ref&&amt&&$("p-name").value.trim();
+  if(!basics){ wa.setAttribute("aria-disabled","true"); wa.removeAttribute("href"); } else { wa.removeAttribute("aria-disabled"); wa.href=waLink(txt); }
+  wa.textContent = API()? "Or tell us on WhatsApp" : "Tell us on WhatsApp";
+  wa.className = "btn "+(API()?"ghost":"primary");
+}
+$("p-send").onclick=async()=>{
+  const btn=$("p-send"); busy(btn,true,"Sending…");
+  try{
+    const f=$("p-proof").files[0];
+    const proofPath=f&&!GOOGLE&&!DEMO? await uploadProof(f) : null;
+    const proof=f&&GOOGLE? await fileData(f) : null;     // the Google back office saves it in the boarder's Drive
+    const r=await api("payment",{ref:$("p-ref").value.trim(), amount:parseFloat($("p-amt").value), name:$("p-name").value.trim(),
+      phone:$("p-phone").value.trim(), datePaid:$("p-date").value, proofPath, proof, method:paidMethod});
+    $("p-done").hidden=false; ["p-send","p-wa"].forEach(id=>$(id).hidden=true);
+    $("p-done").innerHTML=`<h3>Thank you!</h3><p class="muted">We've received your payment notice for <b><code>${$("p-ref").value.trim()}</code></b>. ${esc(BRAND.name)} will confirm on WhatsApp once it reflects in our bank.</p>`;
+  }catch(e){ toast(e.message+". Please tell us on WhatsApp instead."); }
+  finally{ busy(btn,false); }
+};
+document.querySelectorAll("#paidForm input").forEach(x=>x.addEventListener("input",updatePaid));
+$("p-proof").addEventListener("change",updatePaid);
+
+/* ---------- live prices & bank details from the back office ---------- */
+async function remoteLook(r){
+  const k={ name:(r.businessName||"").trim(), tagline:r.tagline||"", brand:r.colors&&r.colors.brand, accent:r.colors&&r.colors.accent, logo:"" };
+  if(r.logoUrl) k.logo=r.logoUrl;                                   // Supabase: public picture link
+  else if(r.logoVersion && GOOGLE){                                 // Google: the logo lives in the boarder's Drive
+    let c=null; try{ c=JSON.parse(localStorage.getItem(APP_KEY("brand-logo"))||"null"); }catch(e){}
+    if(c && c.v===r.logoVersion) k.logo=c.data;
+    else { try{ const j=await gget({action:"logo"}); if(j.data){ k.logo=j.data; try{ localStorage.setItem(APP_KEY("brand-logo"),JSON.stringify({v:r.logoVersion,data:j.data})); }catch(e){} } }catch(e){} }
+  }
+  if(DEMO) return;                                                  // the demo keeps the sample look
+  useLook(k); try{ localStorage.setItem(APP_KEY("brand-look"),JSON.stringify(k)); }catch(e){}
+  applyBrand();
+}
+function applyRemote(r){
+  if(!r) return;
+  remoteLook(r);
+  if(r.rates&&r.rates.small) SETTINGS.rates=r.rates;
+  if(r.festive) SETTINGS.festive=r.festive;
+  if(typeof r.familyDiscount==="number") SETTINGS.familyDiscount=r.familyDiscount;
+  if(r.daycare&&r.daycare.full&&r.daycare.full.small) SETTINGS.daycare=r.daycare;
+  if(r.hours) SETTINGS.hours=r.hours;
+  if(Array.isArray(r.rules)&&r.rules.length) SETTINGS.rules=r.rules;
+  if(typeof r.cancellation==="string") SETTINGS.cancellation=r.cancellation;
+  if(r.bank && !DEMO) SETTINGS.bank=r.bank;
+  if(typeof r.payLink==="string") SETTINGS.payLink=DEMO?"":r.payLink;
+  if(typeof r.payLabel==="string") SETTINGS.payLabel=r.payLabel;
+  if(typeof r.refPrefix==="string" && r.refPrefix) SETTINGS.refPrefix=r.refPrefix;
+  if("maxDogs" in r) SETTINGS.capacity=r.maxDogs||null;
+  if(r.whatsapp) SETTINGS.whatsapp=String(r.whatsapp).replace(/\D/g,"");
+}
+function renderChips(){
+  renderRules();
+  $("rateChips").innerHTML = `<span class="rate">Small <b>${R(SETTINGS.rates.small)}</b>/night</span><span class="rate">Medium <b>${R(SETTINGS.rates.medium)}</b>/night</span><span class="rate">Day care from <b>${R(Math.min(SETTINGS.daycare.half.small,SETTINGS.daycare.half.medium))}</b></span><span class="rate">Long stay <b>monthly</b> as agreed</span><span class="rate">Pickup &amp; drop-off <b>on request</b></span>`;
+  $("discTxt").textContent = Math.round(SETTINGS.familyDiscount*100) + "%";
+}
+async function loadRemote(){
+  if(!API()) return;
+  try{ const c=localStorage.getItem(APP_KEY("prr-settings")); if(c){ applyRemote(JSON.parse(c)); renderChips(); updateBook(); updateExt(); } }catch(e){}
+  try{
+    const st=await getSettings(), error=null;
+    if(!error&&st){ applyRemote(st); applyBrand(); try{localStorage.setItem(APP_KEY("prr-settings"),JSON.stringify(st));}catch(e){} renderChips(); updateBook(); updateExt(); updatePaid(); }
+  }catch(e){ /* offline: keep built-in prices */ }
+}
+
+/* ---------- availability calendar (counts only – never other clients' details) ---------- */
+async function loadAvailability(){
+  if(!API()) return;
+  try{
+    const data=await getAvailability();
+    if(!data) return;
+    AVAIL={capacity:data.capacity||null, from:data.from, days:Object.fromEntries((data.days||[]).map(x=>[x.d, x.dogs]))};
+    if(!calMonth) calMonth=String(data.from).slice(0,7);
+    renderCal(); updateBook();
+  }catch(e){ /* offline: no calendar */ }
+}
+function cap(){ return (AVAIL&&AVAIL.capacity) || SETTINGS.capacity || null; }
+function placesLeft(d){ const c=cap(); if(!c||!AVAIL||!(d in AVAIL.days)) return null; return c - AVAIL.days[d]; }
+function stayDays(){                 // the days this booking needs a place
+  if(isDay()) return dcDays();
+  const a=$("b-in").value, b=$("b-out").value; if(!a||!b||b<=a) return [];
+  const out=[]; for(let d=parse(a); iso(d)<b; d.setUTCDate(d.getUTCDate()+1)) out.push(iso(d)); return out;
+}
+function fullDays(n){ return stayDays().filter(d=>{ const l=placesLeft(d); return l!==null && l < Math.max(n,1); }); }
+function renderCal(){
+  const box=$("cal"); if(!AVAIL||!cap()){ box.hidden=true; return; }
+  box.hidden=false;
+  const [y,m]=calMonth.split("-").map(Number), first=new Date(Date.UTC(y,m-1,1)), days=new Date(Date.UTC(y,m,0)).getUTCDate();
+  $("calTitle").textContent=first.toLocaleDateString("en-ZA",{month:"long",year:"numeric",timeZone:"UTC"});
+  const keys=Object.keys(AVAIL.days).sort(), lastM=keys[keys.length-1].slice(0,7), firstM=AVAIL.from.slice(0,7);
+  $("calPrev").disabled=calMonth<=firstM; $("calNext").disabled=calMonth>=lastM;
+  const sel=new Set(stayDays()), need=Math.max(dogs().length,1), c=cap();
+  let h=["Mo","Tu","We","Th","Fr","Sa","Su"].map(d=>`<div class="cal-dow">${d}</div>`).join("");
+  for(let i=0;i<(first.getUTCDay()+6)%7;i++) h+='<div class="cal-day blank"></div>';
+  for(let n=1;n<=days;n++){
+    const d=`${calMonth}-${String(n).padStart(2,"0")}`, left=placesLeft(d);
+    let cls="past", tip="";
+    if(left!==null){ cls = left<need ? "full" : left<=Math.max(2,Math.ceil(c*0.25)) ? "few" : "open";
+      tip = left<=0 ? "Full" : `${left} place${left>1?"s":""} left`; }
+    h+=`<button type="button" class="cal-day ${cls}${sel.has(d)?" sel":""}" data-d="${d}" ${cls==="past"||cls==="full"?"disabled":""} aria-label="${fmt(d)}${tip?": "+tip:""}">${n}${left!==null?`<small>${left<=0?"full":left}</small>`:""}</button>`;
+  }
+  $("calGrid").innerHTML=h;
+  $("calHint").textContent = isDay()? "Tap the days you'd like for day care." : isLong()? "Tap a day to choose your check-in date." : "Tap a day to choose your check-in, then your check-out. The small number is places left.";
+}
+$("calGrid").addEventListener("click",e=>{
+  const b=e.target.closest("[data-d]"); if(!b||b.disabled) return; const d=b.dataset.d;
+  if(isDay()){ if(!dcDays().includes(d)) addDcDay(d); }
+  else if(isLong()){ $("b-in").value=d; }
+  else { const a=$("b-in").value;
+    if(calPick==="out" && a && d>a){ $("b-out").value=d; calPick="in"; }
+    else { $("b-in").value=d; const nx=parse(d); nx.setUTCDate(nx.getUTCDate()+1); $("b-out").value=iso(nx); calPick="out"; } }
+  updateBook(); renderCal();
+});
+function moveMonth(k){ const [y,m]=calMonth.split("-").map(Number); const d=new Date(Date.UTC(y,m-1+k,1)); calMonth=iso(d).slice(0,7); renderCal(); }
+$("calPrev").onclick=()=>moveMonth(-1); $("calNext").onclick=()=>moveMonth(1);
+
+/* ---------- daily photos: only for the client's own bookings (each has a secret photo code) ---------- */
+function myStays(){ try{ return JSON.parse(localStorage.getItem(APP_KEY("my-stays"))||"[]"); }catch(e){ return []; } }
+function rememberStay(st){
+  if(!st || !/^[0-9a-f]{24}$/.test(st.token||"") && !/^[A-Za-z0-9_-]{16,64}$/.test(st.token||"")) return;
+  const list=myStays().filter(x=>x.token!==st.token); list.unshift(st);
+  try{ localStorage.setItem(APP_KEY("my-stays"),JSON.stringify(list.slice(0,10))); }catch(e){}
+}
+async function getPhotos(token){
+  if(GOOGLE) return await gget({action:"photos", token});
+  const {data, error}=await sb().rpc("paws_booking_photos",{p_token:token}); if(error) throw error;
+  if(data && data.photos) data.photos.forEach(p=>{ p.url=`${SETTINGS.supabase.url}/storage/v1/object/public/paws-photos/${p.path}`; });
+  return data;
+}
+function dayLabel(d){ const t=new Date().toISOString().slice(0,10); const y=new Date(Date.now()-864e5).toISOString().slice(0,10);
+  return d===t?"Today":d===y?"Yesterday":fmt(d); }
+function myBookings(){ try{ return JSON.parse(localStorage.getItem(APP_KEY("my-bookings"))||"[]"); }catch(e){ return []; } }
+function myBookingsCard(){
+  const b=myBookings(); if(!b.length) return "";
+  const today=new Date().toISOString().slice(0,10);
+  return `<div class="stay"><h2>My bookings</h2>${b.map(x=>`<div class="line" style="border-top:1px solid var(--line);padding-top:8px"><span><b>${esc(x.dogs||"")}</b> · ${x.checkIn?fmt(x.checkIn):""}${x.checkOut&&x.checkOut!==x.checkIn?" – "+fmt(x.checkOut):""}<br><span class="muted">${esc(x.ref)} · ${esc(x.status||"")}</span></span><span>${x.balance>0?"Due "+R(x.balance):x.checkOut&&x.checkOut<today?"":"Paid"}</span></div>`).join("")}</div>`;
+}
+async function clientLogin(phone, ref){
+  if(GOOGLE) return await api("mystays",{phone, ref});
+  const {data, error}=await sb().rpc("paws_client_login",{p_phone:phone, p_ref:ref}); if(error) throw error; return data;
+}
+function wireLogin(){
+  const f=$("loginForm"); if(!f) return;
+  f.onsubmit=async e=>{ e.preventDefault(); const err=$("li-err"), btn=$("li-go"); err.hidden=true; busy(btn,true,"Checking…");
+    try{
+      const r=await clientLogin($("li-phone").value.trim(), $("li-ref").value.trim());
+      if(!r||!r.ok) throw new Error((r&&r.error)||"We could not find that booking.");
+      (r.stays||[]).slice().reverse().forEach(st=>rememberStay({token:st.token, ref:st.ref}));
+      try{ localStorage.setItem(APP_KEY("my-bookings"),JSON.stringify(r.stays||[])); }catch(x){}
+      busy(btn,false); loadPhotos();
+    }catch(x){ busy(btn,false); err.hidden=false; err.textContent=x.message||String(x); } };
+}
+async function loadPhotos(){
+  const box=$("photoStays");
+  if(DEMO){ box.innerHTML=`<div class="stay"><h2>Daily photos 📷</h2><p class="muted">In your own app, pet parents see photos of their dog playing and sleeping, every day of the stay. You add them from your phone in a few taps, and only that dog's owner can see them.</p><a class="btn primary" href="setup.html">Get my own app →</a></div>`; return; }
+  const stays=myStays();
+  const signin=`<form class="stay" id="loginForm" novalidate><h2>${stays.length?"Another booking?":"Sign in to see your bookings &amp; photos"}</h2>
+    <p class="muted">Use the WhatsApp number you booked with and any of your booking references. No password needed.</p>
+    <div class="row"><label>WhatsApp number<input id="li-phone" type="tel" autocomplete="tel"></label><label>Booking reference<input id="li-ref" data-refph placeholder="${refPrefix()}-…"></label></div>
+    <p class="err" id="li-err" hidden></p><button class="btn primary" id="li-go" type="submit">Show my bookings</button></form>`;
+  if(!stays.length){ box.innerHTML=`<div class="stay"><h2>Daily photos 📷</h2><p class="muted">Once your dog has checked in, photos of them playing and sleeping appear here every day.</p></div>`+signin; wireLogin(); return; }
+  if(!API()){ box.innerHTML=`<div class="stay"><p class="muted">Photos need an internet connection.</p></div>`; return; }
+  box.innerHTML=myBookingsCard()+stays.map((s,i)=>`<div class="stay" id="st${i}"><p class="muted">Loading photos…</p></div>`).join("")+signin; wireLogin();
+  stays.forEach(async (s,i)=>{
+    const el=$("st"+i);
+    try{
+      const d=await getPhotos(s.token);
+      if(!d || !d.ok){ el.remove(); try{ localStorage.setItem(APP_KEY("my-stays"),JSON.stringify(myStays().filter(x=>x.token!==s.token))); }catch(e){} return; }
+      const byDay={}; (d.photos||[]).forEach(p=>(byDay[p.day]=byDay[p.day]||[]).push(p));
+      const days=Object.keys(byDay).sort().reverse();
+      el.innerHTML=`<h2>${esc(d.dogs||"Your dog")} 🐾</h2>
+        <p class="muted">${esc(d.business||BRAND.name||"")} · ${d.checkIn?fmt(d.checkIn):""}${d.checkOut?" – "+fmt(d.checkOut):""} · ${esc(d.ref||"")}</p>
+        ${days.length? days.map(day=>`<p class="day-h">${dayLabel(day)}</p><div class="pics">${byDay[day].map(p=>`<figure class="pic"><a href="${esc(p.url)}" target="_blank" rel="noopener"><img src="${esc(p.url)}" alt="${esc(p.caption||d.dogs||"")}" loading="lazy"></a>${p.caption?`<figcaption>${esc(p.caption)}</figcaption>`:""}</figure>`).join("")}</div>`).join("")
+          : '<p class="muted">No photos yet. They start once your dog has checked in.</p>'}`;
+    }catch(e){ el.innerHTML='<p class="muted">Could not load photos right now. Please try again later.</p>'; }
+  });
+}
+
+/* ---------- tabs ---------- */
+function show(which){
+  ["book","extend","paid","photos"].forEach(k=>{ $("tab-"+k).setAttribute("aria-selected",k===which); $("panel-"+k).hidden=k!==which; });
+  if(which==="photos") loadPhotos();
+}
+$("tab-book").onclick=()=>show("book"); $("tab-extend").onclick=()=>show("extend"); $("tab-paid").onclick=()=>show("paid"); $("tab-photos").onclick=()=>show("photos");
+if(location.hash==="#extend") show("extend"); if(location.hash==="#paid") show("paid");
+/* a photo link from WhatsApp: …/?photos=<code> */
+(function(){ const t=new URLSearchParams(location.search).get("photos"); if(t && /^[0-9a-f]{24}$/.test(t)){ rememberStay({token:t}); show("photos"); setTimeout(()=>$("panel-photos").scrollIntoView({behavior:"smooth"}),300); } })();
+/* back from the card payment page */
+(function(){
+  const q=new URLSearchParams(location.search), ref=q.get("cardpaid");
+  if(ref===null) return;
+  paidMethod="card";
+  history.replaceState(null,"",location.pathname);
+  setTimeout(()=>{ goPaid(ref, q.get("amt")||"");
+    const n=$("p-note"); if(n){ n.hidden=false; n.textContent="Payment done – thank you! Add your name and tap Send so we can match it."; } },0);
+})();
+
+/* ---------- init with sensible example dates ---------- */
+const today=new Date(); const t=new Date(Date.UTC(today.getFullYear(),today.getMonth(),today.getDate()));
+const fri=new Date(t); fri.setUTCDate(t.getUTCDate()+((5-t.getUTCDay()+7)%7||7));
+const mon=new Date(fri); mon.setUTCDate(fri.getUTCDate()+3);
+$("b-in").value=iso(fri); $("b-out").value=iso(mon); $("b-in").min=iso(t); $("b-out").min=iso(t);
+const tue=new Date(mon); tue.setUTCDate(mon.getUTCDate()+2); $("e-cur").value=iso(mon); $("e-new").value=iso(tue);
+$("addDog").onclick=addDog; addDog();
+$("dc-add").onclick=()=>{ addDcDay(); updateBook(); }; $("dc-kind").addEventListener("change",updateBook);
+document.querySelectorAll("#bookForm input,#bookForm select,#bookForm textarea").forEach(x=>x.addEventListener("input",updateBook));
+document.querySelectorAll("#bookForm input[type=checkbox]").forEach(x=>x.addEventListener("change",updateBook));
+document.querySelectorAll("#extForm input,#extForm select").forEach(x=>x.addEventListener("input",updateExt));
+$("b-in").addEventListener("change",()=>{ if($("b-out").value<=$("b-in").value){const d=parse($("b-in").value); d.setUTCDate(d.getUTCDate()+1); $("b-out").value=iso(d);} updateBook(); });
+updateExt();
+$("p-date").value=iso(t);
+function wireApiButtons(){
+  const on=!!API();
+  $("b-send").hidden=!on; $("e-send").hidden=!on;
+  if(on){ $("b-wa").className="btn ghost"; $("b-wa").textContent="Or send on WhatsApp"; $("e-wa").className="btn ghost"; $("e-wa").textContent="Or ask on WhatsApp"; }
+  const sync=()=>{ $("b-send").disabled=$("b-wa").getAttribute("aria-disabled")==="true"; $("e-send").disabled=$("e-wa").getAttribute("aria-disabled")==="true"; };
+  const ob=new MutationObserver(sync); ob.observe($("b-wa"),{attributes:true}); ob.observe($("e-wa"),{attributes:true}); sync();
+}
+
+/* ---------- which business is this? (self-service boarders: …/?b=<their app name>) ---------- */
+const ISS_REG = { url: "https://zyxwadchlypfkwkqprdm.supabase.co", key: "sb_publishable_mwmgwUsAB7cPI4F1T0AyjA_qOsVfe2A" };
+async function lookupBoarder(slug){
+  try{
+    const r=await fetch(ISS_REG.url+"/rest/v1/rpc/app_lookup",{method:"POST",headers:{"Content-Type":"application/json",apikey:ISS_REG.key,Authorization:"Bearer "+ISS_REG.key},body:JSON.stringify({p_slug:slug})});
+    const j=await r.json(); try{ localStorage.setItem(APP_KEY("lookup"),JSON.stringify(j)); }catch(e){} return j;
+  }catch(e){ try{ return JSON.parse(localStorage.getItem(APP_KEY("lookup"))||"null"); }catch(x){ return null; } }   // offline: last known
+}
+async function bootApp(){
+  if(window.APP_SLUG && !DEMO){
+    const L=await lookupBoarder(window.APP_SLUG);
+    if(!L || !L.ok){ pauseApp("App not found", "This booking app link is not active. Please check the link with your boarder."); return; }
+    if(!BRAND.name){ BRAND.name=L.name; BRAND.shortName=L.name; }
+    if(!SETTINGS.refPrefix) BRAND.refPrefix=String(L.name).toUpperCase().replace(/[^A-Z]/g,"").slice(0,5)||"REF";
+    applyBrand();
+    if(L.paused){ pauseApp("Online bookings are paused", `Please contact ${L.name} directly to book.`); return; }
+    if(L.google) GOOGLE=L.google;
+    else { pauseApp("Almost ready", `${L.name}'s booking app is still being set up. Please try again soon.`); return; }
+  }
+  wireApiButtons(); updatePaid(); loadRemote(); loadAvailability();
+}
+bootApp();
+</script>
+
+<script>
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{})); }
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; document.getElementById("installBtn").hidden=false; });
+document.getElementById("installBtn").addEventListener("click",async()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; document.getElementById("installBtn").hidden=true; });
+window.addEventListener("appinstalled",()=>{ document.getElementById("installBtn").hidden=true; });
+</script>
+</body>
+</html>
