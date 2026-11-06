@@ -47,8 +47,12 @@ footer{color:var(--muted);font-size:.8rem;text-align:center}
   <header style="display:flex;flex-direction:column;gap:8px">
     <p class="lead" style="font-size:.85rem">Infinity Sparkle Studios · Personalized Apps</p>
     <h1>Set up your own booking app</h1>
-    <p class="lead">About 15 minutes, and you do it yourself. <b class="freeText">Free until 30 November 2026</b> (launch offer); after that a once-off R150 registration fee and your monthly plan. Your clients' bookings, payments and photos are kept in a Google Sheet in <b>your own Google account</b>.</p>
+    <p class="lead">About 15 minutes – do it yourself, or we set it up with you. <b class="freeText">Free until 30 November 2026</b> (launch offer); after that a once-off R150 registration fee and your monthly plan. Your clients' bookings, payments and photos are kept in a Google Sheet in <b>your own Google account</b>.</p>
   </header>
+
+  <div class="note" id="phoneNote" hidden>
+    <b>📱 You're on a phone.</b> You can register here (step 1), but steps 2–5 need a <b>computer</b> (laptop or desktop): Google's phone app doesn't show the menus you need. After registering, tap <b>Send my setup link to WhatsApp</b> and open it later on a computer – you'll continue where you stopped.
+  </div>
 
   <!-- STEP 1 -->
   <section class="step" id="s1">
@@ -66,17 +70,24 @@ footer{color:var(--muted);font-size:.8rem;text-align:center}
       <label>Plan<select id="plan"><option value="home">Home – R229/month (R2,290/year)</option><option value="kennel">Kennel – R429/month (R4,290/year)</option></select></label>
     </div>
     <p class="lead" style="font-size:.85rem">Your clients' link will be <span class="link" style="padding:2px 6px" id="slugPrev">…/?b=yourname</span></p>
-    <label class="check"><input type="checkbox" id="a-terms"> I understand the app is <span class="freeText">free until 30 November 2026</span>. To keep using the app after that I pay a once-off R150 registration fee with my first month, then my monthly (or yearly) plan; if I don't, online bookings pause. My data stays in my own Google account.</label>
-    <label class="check"><input type="checkbox" id="a-popia"> Infinity Sparkle Studios may keep my business details to run my subscription and contact me (POPIA). My clients' details stay in my own Google account.</label>
+    <fieldset class="choice" style="border:1px solid var(--line);border-radius:12px;padding:12px;margin:0;display:flex;flex-direction:column;gap:8px">
+      <legend style="font-weight:700;padding:0 6px">How would you like to set up your app?</legend>
+      <label class="check"><input type="radio" name="how" value="diy" checked> <span><b>I'll do it myself</b> – about 15 minutes with the step-by-step guide below. Once-off <b>R150 registration</b>, paid with your first month.</span></label>
+      <label class="check"><input type="radio" name="how" value="help"> <span><b>Set it up for me</b> – we do the Google steps with you on WhatsApp or a quick call. Once-off <b>R350</b>, which includes the registration.</span></label>
+    </fieldset>
+    <label class="check"><input type="checkbox" id="a-terms"> <span>I understand the app is <span class="freeText">free until 30 November 2026</span>. To keep using the app after that I pay the once-off fee I chose above (R150 registration, or R350 if you set it up for me) with my first month, then my monthly (or yearly) plan; if I don't, online bookings pause. My data stays in my own Google account.</span></label>
+    <label class="check"><input type="checkbox" id="a-popia"> <span>Infinity Sparkle Studios may keep my business details to run my subscription and contact me (POPIA). My clients' details stay in my own Google account.</span></label>
     <p class="err" id="e1" hidden></p>
     <button class="btn primary" id="go1">Start free</button>
     <p class="okmsg" id="ok1" hidden></p>
+    <div class="note" id="helpBox" hidden><b>We'll set it up with you.</b> Tap the button to choose a time on WhatsApp. Have your computer, your Gmail password, your logo, prices and bank details ready – it takes about 15 minutes. <br><a class="btn accent" id="helpWa" target="_blank" rel="noopener" style="margin-top:8px">Book my setup on WhatsApp</a></div>
   </section>
 
   <!-- STEP 2 -->
   <section class="step locked" id="s2">
     <h2><span class="num">2</span>Make your back office (Google Sheet)</h2>
-    <p class="lead">You need a free Google (Gmail) account. Do this on a computer if you can – it's easier.</p>
+    <p class="lead"><b>Do steps 2–5 on a computer</b> (laptop or desktop) – they don't work in Google's phone app. You need a free Google (Gmail) account.</p>
+    <a class="btn ghost" id="sendSelf" target="_blank" rel="noopener" hidden>📱 Send my setup link to WhatsApp</a>
     <ol class="howto">
       <li><a class="btn accent" id="tplBtn" target="_blank" rel="noopener">Copy my back office</a> – Google asks <b>"Make a copy?"</b> → tap <b>Make a copy</b>. <span id="tplNote" class="err" hidden>The template link isn't ready yet – WhatsApp ISS and we'll send it.</span></li>
       <li>In your new sheet, wait a few seconds for the <b>🐾 Bookings</b> menu at the top, then choose <b>🐾 Bookings → 1. Set up back office</b>.</li>
@@ -152,6 +163,7 @@ try { ST = JSON.parse(localStorage.getItem("iss-setup") || "{}"); } catch (e) {}
 (function fromLink(){ const q = new URLSearchParams(location.search); if (q.get("b") && q.get("m")) { ST = { slug: q.get("b"), manage: q.get("m"), activeUntil: ST.activeUntil, connected: ST.connected }; save(); } })();
 function fmtDate(x){ if(!x) return freeUntil(); const d=new Date(x+"T12:00:00"); return isNaN(d)?x:d.toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"}); }
 function save(){ try { localStorage.setItem("iss-setup", JSON.stringify(ST)); } catch (e) {} }
+const help = () => !!document.querySelector('input[name="how"][value="help"]:checked');
 const appUrl = () => `${APP_BASE}?b=${ST.slug}`;
 /* launch offer: free until 30 November 2026; from December new boarders get 30 days */
 function freeUntil(){ const t=new Date(); const d=t.toISOString().slice(0,10) <= "2026-11-30" ? new Date("2026-11-30T12:00:00") : new Date(t.getTime()+30*864e5);
@@ -177,13 +189,13 @@ $("go1").onclick = async () => {
     try {
       const parts = v("name").split(/\s+/);
       const crm = await rpc("submit_enquiry", { p_first_name: parts[0], p_last_name: parts.slice(1).join(" ") || null, p_email: v("email") || null, p_phone: v("phone"),
-        p_brief: `SELF-SERVICE BOARDER – Personalized App (booking app)\nBusiness: ${v("biz")}\nApp name: ${v("slug")}\nPlan: ${$("plan").value}\nFree until ${freeUntil()}, then R150 registration fee + first month.`,
+        p_brief: `SELF-SERVICE BOARDER – Personalized App (booking app)\nBusiness: ${v("biz")}\nApp name: ${v("slug")}\nPlan: ${$("plan").value}\nSetup: ${help() ? "SET IT UP FOR ME – R350 (incl. registration) – contact them to book a session" : "Do it myself – R150 registration"}\nFree until ${freeUntil()}, then the once-off fee + first month.`,
         p_popia_consent: true, p_title: "Personalized App – " + v("biz"), p_order_type: "personalized_app", p_preferred_channel: "whatsapp", p_business_name: v("biz"), p_is_trade: true });
       order = crm && crm.order_no;
     } catch (x) { /* the subscription register below is what matters */ }
     // 2. the subscription register
-    const r = await rpc("app_register", { p: { business: v("biz"), name: v("name"), phone: v("phone"), email: v("email"), plan: $("plan").value, slug: v("slug"), order } });
-    ST = { slug: r.slug, manage: r.manage, activeUntil: r.activeUntil }; save(); render();
+    const r = await rpc("app_register", { p: { business: v("biz"), name: v("name"), phone: v("phone"), email: v("email"), plan: $("plan").value, slug: v("slug"), order, help: help() } });
+    ST = { slug: r.slug, manage: r.manage, activeUntil: r.activeUntil, help: help(), biz: v("biz") }; save(); render();
     $("s2").scrollIntoView({ behavior: "smooth" });
   } catch (x) { b.disabled = false; b.textContent = "Start free"; e.hidden = false; e.textContent = x.message; }
 };
@@ -213,7 +225,9 @@ function qrPng(text){
 function render(){
   const has = !!ST.slug, con = !!ST.connected;
   $("s1").classList.toggle("done", has);
-  if (has) { $("go1").hidden = true; $("ok1").hidden = false; $("ok1").textContent = `✓ Registered – free until ${fmtDate(ST.activeUntil)}. Your app name: ${ST.slug}`; }
+  if (has) { $("go1").hidden = true; $("ok1").hidden = false; $("ok1").textContent = `✓ Registered – free until ${fmtDate(ST.activeUntil)}. Your app name: ${ST.slug}`;
+    const hb = $("helpBox"); hb.hidden = !ST.help;
+    if (ST.help) $("helpWa").href = `https://wa.me/${ISS.whatsapp}?text=` + encodeURIComponent(`Hi Martha, please set up my booking app for me (R350). Business: ${ST.biz || ""}, app name: ${ST.slug}. When can we do it?`); }
   ["s2", "s3"].forEach(id => $(id).classList.toggle("locked", !has));
   $("s2").classList.toggle("done", con); $("s3").classList.toggle("done", con);
   if (con) { $("ok3").hidden = false; $("ok3").textContent = "✓ Connected – your app now saves bookings in your Google Sheet."; }
@@ -222,6 +236,8 @@ function render(){
   if (has) {
     const self = `${location.href.split("#")[0].split("?")[0]}?b=${ST.slug}&m=${ST.manage}`;
     $("selfLink").href = self; $("selfLink").textContent = "your setup link";
+    $("sendSelf").hidden = false;
+    $("sendSelf").href = "https://wa.me/?text=" + encodeURIComponent(`My booking app setup link – open it on a computer to continue (keep it private): ${self}`);
   }
   if (con) {
     const link = appUrl(); $("appLink").textContent = link; $("openApp").href = link;
@@ -231,6 +247,8 @@ function render(){
   }
 }
 $("copyLink").onclick = async () => { try { await navigator.clipboard.writeText(appUrl()); $("copyLink").textContent = "Copied ✓"; } catch (e) { $("copyLink").textContent = appUrl(); } };
+/* phones: steps 2–5 need a computer */
+if (/Android|iPhone|iPod|Mobile/i.test(navigator.userAgent) || (window.matchMedia && matchMedia("(pointer:coarse)").matches && innerWidth < 900)) $("phoneNote").hidden = false;
 render();
 </script>
 </body>
