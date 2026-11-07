@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Set up your own dog boarding booking app in 15 minutes. Launch offer: free until 30 November 2026.">
+<meta name="theme-color" content="#1E5B8C">
+<title>Set up your booking app</title>
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+:root{--bg:#F4F7FA;--surface:#fff;--ink:#16212B;--muted:#55636F;--line:#D9E2EA;--brand:#1E5B8C;--brand-ink:#fff;--accent:#F2B705;--field:#FAFCFD;--ok:#2F7A4F;--bad:#B3261E;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--body:"Nunito Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0E151B;--surface:#16212B;--ink:#E8EEF3;--muted:#A7B4BF;--line:#2A3946;--brand:#7FB2DA;--brand-ink:#0E151B;--field:#1B2833;--ok:#6CC495;--bad:#F2918A}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;padding:24px 16px 56px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,5vw,2.2rem);line-height:1.1;margin:0}
+h2{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:0}
+.lead{margin:0;color:var(--muted);font-size:1rem}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.step.done{opacity:.75}.step.locked{opacity:.5;pointer-events:none}
+.num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font-weight:800;margin-right:8px;font-size:.9rem}
+.step.done .num{background:var(--ok)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:5px;font-size:.86rem;font-weight:600;color:var(--muted)}
+input,select{font:inherit;font-weight:400;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:9px;padding:10px 11px;width:100%;min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.check{flex-direction:row;align-items:flex-start;gap:10px;font-weight:400;color:var(--ink);font-size:.92rem}
+.check input{width:18px;height:18px;margin-top:3px;flex:none;accent-color:var(--brand)}
+.btn{font:inherit;font-weight:700;border-radius:12px;padding:13px 18px;border:0;cursor:pointer;text-align:center;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}.btn.accent{background:var(--accent);color:#1A1405}.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn[disabled]{opacity:.55;cursor:progress}
+.err{color:var(--bad);font-size:.9rem;margin:0}.okmsg{color:var(--ok);font-weight:700;margin:0}
+ol.howto{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+ol.howto b{color:var(--ink)}
+.note{background:color-mix(in srgb,var(--accent) 18%,var(--surface));border-radius:10px;padding:10px 12px;font-size:.9rem}
+.link{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--field);border:1px solid var(--line);border-radius:9px;padding:10px;word-break:break-all;font-size:.9rem}
+#qr{background:#fff;padding:12px;border-radius:12px;width:fit-content}
+#qr img{display:block;width:220px;height:220px;image-rendering:pixelated}
+footer{color:var(--muted);font-size:.8rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <p class="lead" style="font-size:.85rem">Infinity Sparkle Studios · Personalized Apps</p>
+    <h1>Set up your own booking app</h1>
+    <p class="lead">About 15 minutes – do it yourself, or we set it up with you. <b class="freeText">Free until 30 November 2026</b> (launch offer); after that a once-off R150 registration fee and your monthly plan. Your clients' bookings, payments and photos are kept in a Google Sheet in <b>your own Google account</b>.</p>
+  </header>
+
+  <div class="note" id="phoneNote" hidden>
+    <b>📱 You're on a phone.</b> You can register here (step 1), but steps 2–5 need a <b>computer</b> (laptop or desktop): Google's phone app doesn't show the menus you need. After registering, tap <b>Send my setup link to WhatsApp</b> and open it later on a computer – you'll continue where you stopped.
+  </div>
+
+  <!-- STEP 1 -->
+  <section class="step" id="s1">
+    <h2><span class="num">1</span>Your business</h2>
+    <div class="row">
+      <label>Business name<input id="biz" autocomplete="organization"></label>
+      <label>Your name<input id="name" autocomplete="name"></label>
+    </div>
+    <div class="row">
+      <label>WhatsApp number<input id="phone" type="tel" autocomplete="tel" placeholder="e.g. 082 123 4567"></label>
+      <label>Email<input id="email" type="email" autocomplete="email"></label>
+    </div>
+    <div class="row">
+      <label>Your app name (letters and numbers)<input id="slug" maxlength="18" placeholder="e.g. sunnypaws"></label>
+      <label>Plan<select id="plan"><option value="home">Home – R229/month (R2,290/year)</option><option value="kennel">Kennel – R429/month (R4,290/year)</option></select></label>
+    </div>
+    <p class="lead" style="font-size:.85rem">Your clients' link will be <span class="link" style="padding:2px 6px" id="slugPrev">…/?b=yourname</span></p>
+    <fieldset class="choice" style="border:1px solid var(--line);border-radius:12px;padding:12px;margin:0;display:flex;flex-direction:column;gap:8px">
+      <legend style="font-weight:700;padding:0 6px">How would you like to set up your app?</legend>
+      <label class="check"><input type="radio" name="how" value="diy" checked> <span><b>I'll do it myself</b> – about 15 minutes with the step-by-step guide below. Once-off <b>R150 registration</b>, paid with your first month.</span></label>
+      <label class="check"><input type="radio" name="how" value="help"> <span><b>Set it up for me</b> – we do the Google steps with you on WhatsApp or a quick call. Once-off <b>R350</b>, which includes the registration.</span></label>
+    </fieldset>
+    <label class="check"><input type="checkbox" id="a-terms"> <span>I understand the app is <span class="freeText">free until 30 November 2026</span>. To keep using the app after that I pay the once-off fee I chose above (R150 registration, or R350 if you set it up for me) with my first month, then my monthly (or yearly) plan; if I don't, online bookings pause. My data stays in my own Google account.</span></label>
+    <label class="check"><input type="checkbox" id="a-popia"> <span>Infinity Sparkle Studios may keep my business details to run my subscription and contact me (POPIA). My clients' details stay in my own Google account.</span></label>
+    <p class="err" id="e1" hidden></p>
+    <button class="btn primary" id="go1">Start free</button>
+    <p class="okmsg" id="ok1" hidden></p>
+    <div class="note" id="helpBox" hidden><b>We'll set it up with you.</b> Tap the button to choose a time on WhatsApp. Have your computer, your Gmail password, your logo, prices and bank details ready – it takes about 15 minutes. <br><a class="btn accent" id="helpWa" target="_blank" rel="noopener" style="margin-top:8px">Book my setup on WhatsApp</a></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step locked" id="s2">
+    <h2><span class="num">2</span>Make your back office (Google Sheet)</h2>
+    <p class="lead"><b>Do steps 2–5 on a computer</b> (laptop or desktop) – they don't work in Google's phone app. You need a free Google (Gmail) account.</p>
+    <a class="btn ghost" id="sendSelf" target="_blank" rel="noopener" hidden>📱 Send my setup link to WhatsApp</a>
+    <ol class="howto">
+      <li><a class="btn accent" id="tplBtn" target="_blank" rel="noopener">Copy my back office</a> – Google asks <b>"Make a copy?"</b> → tap <b>Make a copy</b>. <span id="tplNote" class="err" hidden>The template link isn't ready yet – WhatsApp ISS and we'll send it.</span></li>
+      <li>In your new sheet, wait a few seconds for the <b>🐾 Bookings</b> menu at the top, then choose <b>🐾 Bookings → 1. Set up back office</b>.</li>
+      <li>Google asks for permission: tap <b>Continue</b> → choose your account. If it says <b>"Google hasn't verified this app"</b>, tap <b>Advanced</b> → <b>Go to … (unsafe)</b> → <b>Allow</b>. (It's your own copy, running only in your account.) Then choose <b>1. Set up back office</b> again.</li>
+      <li>Open <b>Extensions → Apps Script</b>. At the top right tap <b>Deploy → New deployment</b>. Click the ⚙️ next to "Select type" → <b>Web app</b>.</li>
+      <li>Set <b>Execute as: Me</b> and <b>Who has access: Anyone</b> → <b>Deploy</b> → allow access again if asked.</li>
+      <li>Copy the <b>Web app URL</b> (it starts with https://script.google.com/macros/s/ and ends with /exec).</li>
+    </ol>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step locked" id="s3">
+    <h2><span class="num">3</span>Connect your back office to your app</h2>
+    <label>Paste your Web app URL here<input id="gurl" placeholder="https://script.google.com/macros/s/…/exec"></label>
+    <p class="err" id="e3" hidden></p>
+    <button class="btn primary" id="go3">Connect</button>
+    <p class="okmsg" id="ok3" hidden></p>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step locked" id="s4">
+    <h2><span class="num">4</span>Make it yours</h2>
+    <p class="lead">In your Google Sheet choose <b>🐾 Bookings → Business settings form</b> and fill in:</p>
+    <ul class="howto" style="padding-left:22px;margin:0">
+      <li><b>Your look:</b> business name, short line, main and accent colour, and <b>upload your logo</b></li>
+      <li><b>Prices, hours and house rules</b>, and <b>most dogs at a time</b> (this switches on your booking calendar)</li>
+      <li><b>Bank details</b> for EFT, and your Yoco or SnapScan link if you take cards</li>
+      <li><b>Your app link</b> (below) – so the photo links you send clients open your app</li>
+      <li><b>Your back office link</b> – the Web app URL you pasted in step 3: <span class="link" id="gurlShow" style="display:block;margin-top:4px">…</span></li>
+      <li><b>Alerts:</b> you get an <b>email</b> for every booking and payment notice (to your Google email, or another address you fill in). A WhatsApp alert through CallMeBot is optional.</li>
+    </ul>
+    <div class="note"><b>On your phone:</b> in the sheet choose <b>🐾 Bookings → 📱 My back office on my phone</b> and send the link to your WhatsApp. From there you check payments, see who's here today and add <b>daily photos</b> of each dog.</div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step locked" id="s5">
+    <h2><span class="num">5</span>Share your app with your clients</h2>
+    <p class="lead">Your clients book, pay, sign in and see their dog's photos here:</p>
+    <div class="link" id="appLink"></div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+      <div id="qr"></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <a class="btn primary" id="openApp" target="_blank" rel="noopener">Open my app</a>
+        <a class="btn accent" id="shareWa" target="_blank" rel="noopener">Share on WhatsApp</a>
+        <a class="btn ghost" id="dlQr" download="my-app-qr.png">Download my QR code</a>
+        <button class="btn ghost" id="copyLink" type="button">Copy link</button>
+      </div>
+    </div>
+    <p class="lead" style="font-size:.88rem">Clients install it from the link (Android: <b>Install app</b>; iPhone: Safari → Share → <b>Add to Home Screen</b>). They sign in under <b>📷 Photos</b> with their WhatsApp number and a booking reference – no password.</p>
+    <div class="note" id="subNote"></div>
+  </section>
+
+  <p class="lead" style="font-size:.85rem">Keep this page's link to come back to your setup later: <a id="selfLink" href="#">your setup link</a> (keep it private).</p>
+  <footer>Infinity Sparkle Studios · Personalized Apps · <a href="https://wa.me/27790400809" style="color:inherit">WhatsApp 079 040 0809</a></footer>
+</div>
+
+<script src="qrcode.js"></script>
+<script>
+/* ISS register (boarders are ISS clients). Their clients' data never comes here – it stays in their Google Sheet. */
+const ISS = { url: "https://zyxwadchlypfkwkqprdm.supabase.co", key: "sb_publishable_mwmgwUsAB7cPI4F1T0AyjA_qOsVfe2A", whatsapp: "27790400809" };
+const TEMPLATE_URL = "https://docs.google.com/spreadsheets/d/1Rwwp1OinpXLuMciud5PC4aidyDqcNl96rJFK-88W2OU/copy";   // ISS: the "Make a copy" link of the back office template, e.g. https://docs.google.com/spreadsheets/d/<ID>/copy
+const APP_BASE = location.href.split("#")[0].split("?")[0].replace(/[^/]*$/, "");
+const $ = id => document.getElementById(id), v = id => $(id).value.trim();
+const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+async function rpc(fn, body){
+  const r = await fetch(`${ISS.url}/rest/v1/rpc/${fn}`, { method: "POST", headers: { "Content-Type": "application/json", apikey: ISS.key, Authorization: "Bearer " + ISS.key }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(String(j.message || "Something went wrong").replace(/^.*?:\s*/, ""));
+  return j;
+}
+let ST = {};   // {slug, manage, activeUntil, connected}
+try { ST = JSON.parse(localStorage.getItem("iss-setup") || "{}"); } catch (e) {}
+(function fromLink(){ const q = new URLSearchParams(location.search); if (q.get("b") && q.get("m")) { ST = { slug: q.get("b"), manage: q.get("m"), activeUntil: ST.activeUntil, connected: ST.connected }; save(); } })();
+function fmtDate(x){ if(!x) return freeUntil(); const d=new Date(x+"T12:00:00"); return isNaN(d)?x:d.toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"}); }
+function save(){ try { localStorage.setItem("iss-setup", JSON.stringify(ST)); } catch (e) {} }
+const help = () => !!document.querySelector('input[name="how"][value="help"]:checked');
+const appUrl = () => `${APP_BASE}?b=${ST.slug}`;
+/* launch offer: free until 30 November 2026; from December new boarders get 30 days */
+function freeUntil(){ const t=new Date(); const d=t.toISOString().slice(0,10) <= "2026-11-30" ? new Date("2026-11-30T12:00:00") : new Date(t.getTime()+30*864e5);
+  return d.toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"}); }
+document.querySelectorAll(".freeText").forEach(el => { el.textContent = (new Date().toISOString().slice(0,10) <= "2026-11-30" ? "free until " : "free for 30 days, until ") + freeUntil(); if (el.tagName === "B") el.textContent = el.textContent[0].toUpperCase() + el.textContent.slice(1); });
+
+function slugify(x){ return String(x || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 18); }
+$("biz").addEventListener("input", () => { if (!$("slug").dataset.touched) $("slug").value = slugify(v("biz")); prevSlug(); });
+$("slug").addEventListener("input", () => { $("slug").dataset.touched = "1"; $("slug").value = slugify($("slug").value); prevSlug(); });
+function prevSlug(){ $("slugPrev").textContent = `${APP_BASE}?b=${v("slug") || "yourname"}`; }
+prevSlug();
+
+$("go1").onclick = async () => {
+  const m = [], e = $("e1");
+  if (!v("biz")) m.push("your business name"); if (!v("name")) m.push("your name"); if (!v("phone")) m.push("your WhatsApp number");
+  if (v("email") && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v("email"))) m.push("a valid email");
+  if (!$("a-terms").checked) m.push("the free-period tick"); if (!$("a-popia").checked) m.push("the POPIA tick");
+  if (m.length) { e.hidden = false; e.textContent = "Still needed: " + m.join(", ") + "."; return; }
+  e.hidden = true; const b = $("go1"); b.disabled = true; b.textContent = "Starting…";
+  try {
+    // 1. ISS's record of the boarder as a client (Infinity CRM)
+    let order = null;
+    try {
+      const parts = v("name").split(/\s+/);
+      const crm = await rpc("submit_enquiry", { p_first_name: parts[0], p_last_name: parts.slice(1).join(" ") || null, p_email: v("email") || null, p_phone: v("phone"),
+        p_brief: `SELF-SERVICE BOARDER – Personalized App (booking app)\nBusiness: ${v("biz")}\nApp name: ${v("slug")}\nPlan: ${$("plan").value}\nSetup: ${help() ? "SET IT UP FOR ME – R350 (incl. registration) – contact them to book a session" : "Do it myself – R150 registration"}\nFree until ${freeUntil()}, then the once-off fee + first month.`,
+        p_popia_consent: true, p_title: "Personalized App – " + v("biz"), p_order_type: "personalized_app", p_preferred_channel: "whatsapp", p_business_name: v("biz"), p_is_trade: true });
+      order = crm && crm.order_no;
+    } catch (x) { /* the subscription register below is what matters */ }
+    // 2. the subscription register
+    const r = await rpc("app_register", { p: { business: v("biz"), name: v("name"), phone: v("phone"), email: v("email"), plan: $("plan").value, slug: v("slug"), order, help: help() } });
+    ST = { slug: r.slug, manage: r.manage, activeUntil: r.activeUntil, help: help(), biz: v("biz") }; save(); render();
+    $("s2").scrollIntoView({ behavior: "smooth" });
+  } catch (x) { b.disabled = false; b.textContent = "Start free"; e.hidden = false; e.textContent = x.message; }
+};
+
+$("go3").onclick = async () => {
+  const e = $("e3"), u = v("gurl"); e.hidden = true; const b = $("go3"); b.disabled = true; b.textContent = "Checking your back office…";
+  try {
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u)) throw new Error("That doesn't look like the Web app URL. It starts with https://script.google.com/macros/s/ and ends with /exec.");
+    // make sure it really is a back office that answers
+    let okSheet = false;
+    try { const t = await fetch(u + "?action=settings"); const j = await t.json(); okSheet = !!(j && j.ok && j.settings); } catch (x) {}
+    if (!okSheet) throw new Error("We couldn't reach your back office. Check that you chose 'Who has access: Anyone', then try again.");
+    await rpc("app_connect", { p_slug: ST.slug, p_manage: ST.manage, p_google_url: u });
+    ST.connected = true; ST.gurl = u; save(); render();
+    $("s4").scrollIntoView({ behavior: "smooth" });
+  } catch (x) { e.hidden = false; e.textContent = x.message; }
+  b.disabled = false; b.textContent = "Connect";
+};
+
+function qrPng(text){
+  const q = qrcode(0, "Q"); q.addData(text); q.make();
+  const n = q.getModuleCount(), cell = 10, pad = 4, size = (n + pad * 2) * cell, c = document.createElement("canvas");
+  c.width = c.height = size; const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, size, size); g.fillStyle = "#16212B";
+  for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (q.isDark(r, k)) g.fillRect((k + pad) * cell, (r + pad) * cell, cell, cell);
+  return c.toDataURL("image/png");
+}
+function render(){
+  const has = !!ST.slug, con = !!ST.connected;
+  $("s1").classList.toggle("done", has);
+  if (has) { $("go1").hidden = true; $("ok1").hidden = false; $("ok1").textContent = `✓ Registered – free until ${fmtDate(ST.activeUntil)}. Your app name: ${ST.slug}`;
+    const hb = $("helpBox"); hb.hidden = !ST.help;
+    if (ST.help) $("helpWa").href = `https://wa.me/${ISS.whatsapp}?text=` + encodeURIComponent(`Hi Martha, please set up my booking app for me (R350). Business: ${ST.biz || ""}, app name: ${ST.slug}. When can we do it?`); }
+  ["s2", "s3"].forEach(id => $(id).classList.toggle("locked", !has));
+  $("s2").classList.toggle("done", con); $("s3").classList.toggle("done", con);
+  if (con) { $("ok3").hidden = false; $("ok3").textContent = "✓ Connected – your app now saves bookings in your Google Sheet."; }
+  ["s4", "s5"].forEach(id => $(id).classList.toggle("locked", !con));
+  if (TEMPLATE_URL) $("tplBtn").href = TEMPLATE_URL; else { $("tplBtn").removeAttribute("href"); $("tplBtn").style.opacity = .5; $("tplNote").hidden = false; }
+  if (has) {
+    const self = `${location.href.split("#")[0].split("?")[0]}?b=${ST.slug}&m=${ST.manage}`;
+    $("selfLink").href = self; $("selfLink").textContent = "your setup link";
+    $("sendSelf").hidden = false;
+    $("sendSelf").href = "https://wa.me/?text=" + encodeURIComponent(`My booking app setup link – open it on a computer to continue (keep it private): ${self}`);
+  }
+  if (con) {
+    $("gurlShow").textContent = ST.gurl || "(the Web app URL from step 3)";
+    const link = appUrl(); $("appLink").textContent = link; $("openApp").href = link;
+    const png = qrPng(link); $("qr").innerHTML = `<img alt="QR code for ${esc(link)}" src="${png}">`; $("dlQr").href = png;
+    $("shareWa").href = "https://wa.me/?text=" + encodeURIComponent(`Book your dog's stay and see daily photos in our new booking app 🐾 ${link}`);
+    $("subNote").innerHTML = `<b>Your subscription:</b> free until <b>${esc(fmtDate(ST.activeUntil))}</b>. To keep your app running after that, pay the once-off <b>${ST.help ? "R350 setup fee (includes registration)" : "R150 registration fee"}</b> plus your first month (or year) with reference <b>APP-${esc(String(ST.slug).toUpperCase())}</b> – we'll WhatsApp you the payment link before then.`;
+  }
+}
+$("copyLink").onclick = async () => { try { await navigator.clipboard.writeText(appUrl()); $("copyLink").textContent = "Copied ✓"; } catch (e) { $("copyLink").textContent = appUrl(); } };
+/* phones: steps 2–5 need a computer */
+if (/Android|iPhone|iPod|Mobile/i.test(navigator.userAgent) || (window.matchMedia && matchMedia("(pointer:coarse)").matches && innerWidth < 900)) $("phoneNote").hidden = false;
+render();
+</script>
+</body>
+</html>
