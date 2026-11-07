@@ -116,7 +116,8 @@ footer{color:var(--muted);font-size:.8rem;text-align:center}
       <li><b>Prices, hours and house rules</b>, and <b>most dogs at a time</b> (this switches on your booking calendar)</li>
       <li><b>Bank details</b> for EFT, and your Yoco or SnapScan link if you take cards</li>
       <li><b>Your app link</b> (below) – so the photo links you send clients open your app</li>
-      <li>Your <b>WhatsApp number</b> and a free <b>CallMeBot key</b> if you want a WhatsApp message for every booking</li>
+      <li><b>Your back office link</b> – the Web app URL you pasted in step 3: <span class="link" id="gurlShow" style="display:block;margin-top:4px">…</span></li>
+      <li><b>Alerts:</b> you get an <b>email</b> for every booking and payment notice (to your Google email, or another address you fill in). A WhatsApp alert through CallMeBot is optional.</li>
     </ul>
     <div class="note"><b>On your phone:</b> in the sheet choose <b>🐾 Bookings → 📱 My back office on my phone</b> and send the link to your WhatsApp. From there you check payments, see who's here today and add <b>daily photos</b> of each dog.</div>
   </section>
@@ -209,7 +210,7 @@ $("go3").onclick = async () => {
     try { const t = await fetch(u + "?action=settings"); const j = await t.json(); okSheet = !!(j && j.ok && j.settings); } catch (x) {}
     if (!okSheet) throw new Error("We couldn't reach your back office. Check that you chose 'Who has access: Anyone', then try again.");
     await rpc("app_connect", { p_slug: ST.slug, p_manage: ST.manage, p_google_url: u });
-    ST.connected = true; save(); render();
+    ST.connected = true; ST.gurl = u; save(); render();
     $("s4").scrollIntoView({ behavior: "smooth" });
   } catch (x) { e.hidden = false; e.textContent = x.message; }
   b.disabled = false; b.textContent = "Connect";
@@ -240,10 +241,11 @@ function render(){
     $("sendSelf").href = "https://wa.me/?text=" + encodeURIComponent(`My booking app setup link – open it on a computer to continue (keep it private): ${self}`);
   }
   if (con) {
+    $("gurlShow").textContent = ST.gurl || "(the Web app URL from step 3)";
     const link = appUrl(); $("appLink").textContent = link; $("openApp").href = link;
     const png = qrPng(link); $("qr").innerHTML = `<img alt="QR code for ${esc(link)}" src="${png}">`; $("dlQr").href = png;
     $("shareWa").href = "https://wa.me/?text=" + encodeURIComponent(`Book your dog's stay and see daily photos in our new booking app 🐾 ${link}`);
-    $("subNote").innerHTML = `<b>Your subscription:</b> free until <b>${esc(fmtDate(ST.activeUntil))}</b>. To keep your app running after that, pay the once-off <b>R150 registration fee</b> plus your first month (or year) with reference <b>APP-${esc(String(ST.slug).toUpperCase())}</b> – we'll WhatsApp you the payment link before then.`;
+    $("subNote").innerHTML = `<b>Your subscription:</b> free until <b>${esc(fmtDate(ST.activeUntil))}</b>. To keep your app running after that, pay the once-off <b>${ST.help ? "R350 setup fee (includes registration)" : "R150 registration fee"}</b> plus your first month (or year) with reference <b>APP-${esc(String(ST.slug).toUpperCase())}</b> – we'll WhatsApp you the payment link before then.`;
   }
 }
 $("copyLink").onclick = async () => { try { await navigator.clipboard.writeText(appUrl()); $("copyLink").textContent = "Copied ✓"; } catch (e) { $("copyLink").textContent = appUrl(); } };
