@@ -149,7 +149,8 @@ footer{color:var(--muted);font-size:.8rem;text-align:center}
 /* ISS register (boarders are ISS clients). Their clients' data never comes here – it stays in their Google Sheet. */
 const ISS = { url: "https://zyxwadchlypfkwkqprdm.supabase.co", key: "sb_publishable_mwmgwUsAB7cPI4F1T0AyjA_qOsVfe2A", whatsapp: "27790400809" };
 const TEMPLATE_URL = "https://docs.google.com/spreadsheets/d/1Rwwp1OinpXLuMciud5PC4aidyDqcNl96rJFK-88W2OU/copy";   // ISS: the "Make a copy" link of the back office template, e.g. https://docs.google.com/spreadsheets/d/<ID>/copy
-const APP_BASE = location.href.split("#")[0].split("?")[0].replace(/[^/]*$/, "");
+const LIVE_BASE = "https://infinitysparklestudios.github.io/apps/boarding/";   // links always point to the live site, even if this page was opened from a saved file
+const APP_BASE = /^https:/.test(location.protocol) ? location.href.split("#")[0].split("?")[0].replace(/[^/]*$/, "") : LIVE_BASE;
 const $ = id => document.getElementById(id), v = id => $(id).value.trim();
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
@@ -235,7 +236,7 @@ function render(){
   ["s4", "s5"].forEach(id => $(id).classList.toggle("locked", !con));
   if (TEMPLATE_URL) $("tplBtn").href = TEMPLATE_URL; else { $("tplBtn").removeAttribute("href"); $("tplBtn").style.opacity = .5; $("tplNote").hidden = false; }
   if (has) {
-    const self = `${location.href.split("#")[0].split("?")[0]}?b=${ST.slug}&m=${ST.manage}`;
+    const self = `${APP_BASE}setup.html?b=${ST.slug}&m=${ST.manage}`;
     $("selfLink").href = self; $("selfLink").textContent = "your setup link";
     $("sendSelf").hidden = false;
     $("sendSelf").href = "https://wa.me/?text=" + encodeURIComponent(`My booking app setup link – open it on a computer to continue (keep it private): ${self}`);
