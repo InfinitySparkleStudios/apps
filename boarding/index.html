@@ -843,8 +843,7 @@ function updatePaid(){
   const txt=[`💰 PAYMENT MADE – ${BRAND.name}`,`Booking ref: ${ref}`,`Name: ${$("p-name").value}`,`Amount: ${R(amt)}`,`Date paid: ${fmt($("p-date").value)}`, paidMethod==="card"?`Paid ${payWords()}`:`(Proof of payment attached separately)`].join("\n");
   const wa=$("p-wa"), basics=ref&&amt&&$("p-name").value.trim();
   if(!basics){ wa.setAttribute("aria-disabled","true"); wa.removeAttribute("href"); } else { wa.removeAttribute("aria-disabled"); wa.href=waLink(txt); }
-  wa.textContent = API()? "Or tell us on WhatsApp" : "Tell us on WhatsApp";
-  wa.className = "btn "+(API()?"ghost":"primary");
+  wa.textContent = "Tell us on WhatsApp"; wa.className = "btn primary"; wa.hidden = !!API();   // saved payments only, when there is a back office
 }
 $("p-send").onclick=async()=>{
   const btn=$("p-send"); busy(btn,true,"Sending…");
@@ -1055,7 +1054,9 @@ $("p-date").value=iso(t);
 function wireApiButtons(){
   const on=!!API();
   $("b-send").hidden=!on; $("e-send").hidden=!on;
-  if(on){ $("b-wa").className="btn ghost"; $("b-wa").textContent="Or send on WhatsApp"; $("e-wa").className="btn ghost"; $("e-wa").textContent="Or ask on WhatsApp"; }
+  // With a back office, bookings and requests are always saved first – a WhatsApp-only button let clients
+  // send a booking that never reached the system. (The owner still gets the alert.)
+  $("b-wa").hidden=on; $("e-wa").hidden=on;
   const sync=()=>{ $("b-send").disabled=$("b-wa").getAttribute("aria-disabled")==="true"; $("e-send").disabled=$("e-wa").getAttribute("aria-disabled")==="true"; };
   const ob=new MutationObserver(sync); ob.observe($("b-wa"),{attributes:true}); ob.observe($("e-wa"),{attributes:true}); sync();
 }
