@@ -1090,7 +1090,8 @@ async function lookupBoarder(slug){
 async function bootApp(){
   if(window.APP_SLUG && !DEMO){
     const L=await lookupBoarder(window.APP_SLUG);
-    if(!L || !L.ok){ pauseApp("App not found", "This booking app link is not active. Please check the link with your boarder."); return; }
+    if(!L || !L.ok){ try{ localStorage.removeItem("app-b"); }catch(e){}   // don't stay stuck on a business that no longer exists
+      pauseApp("App not found", "This booking app link is not active. Please check the link with your boarder – or scan their QR code again."); return; }
     if(!BRAND.name){ BRAND.name=L.name; BRAND.shortName=L.name; }
     if(!SETTINGS.refPrefix) BRAND.refPrefix=String(L.name).toUpperCase().replace(/[^A-Z]/g,"").slice(0,5)||"REF";
     applyBrand();
