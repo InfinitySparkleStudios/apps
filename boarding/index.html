@@ -793,6 +793,9 @@ function doneBlock(el, title, ref, amount, note){
     ${cardUrl(ref,amount)?`<p class="muted" style="font-weight:700;color:var(--ink)">Pay ${R(amount)} ${esc(payWords())}</p>${cardBtn(ref, amount)}<p class="muted">Or pay by EFT:</p>`:`<p class="muted" style="font-weight:700;color:var(--ink)">Pay ${R(amount)} by EFT</p>`}${bankHtml(ref)}
     <button type="button" class="btn honey" data-paid>I've paid – let ${esc(BRAND.shortName||"us")} know</button>`;
   if(DEMO) el.insertAdjacentHTML("beforeend",`<p class="note"><b>That's it!</b> In your own app this booking would now be in your Google Sheet and on your WhatsApp.</p><a class="btn primary" href="setup.html">Get my own app →</a>`);
+  if(!DEMO && !(matchMedia("(display-mode: standalone)").matches || navigator.standalone===true))
+    el.insertAdjacentHTML("beforeend",`<p class="note"><b>📲 Keep this app on your phone</b> to check your booking, pay and see your dog's daily photos.</p><button type="button" class="btn ghost" data-install>Install app</button>`);
+  const ib=el.querySelector("[data-install]"); if(ib) ib.onclick=()=>document.getElementById("installBtn").click();
   el.querySelector("[data-paid]").onclick=()=>goPaid(ref, amount);
   const cb=el.querySelector("[data-card]"); if(cb) cb.addEventListener("click",()=>{ paidMethod="card"; });
 }
@@ -1102,10 +1105,33 @@ bootApp();
 
 <script>
 if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{})); }
+/* "Install app": shown on every phone and computer where the app is not installed yet (not only when Chrome
+   offers it), so clients keep the app instead of a link in a WhatsApp chat. Without Chrome's offer it explains how. */
 let deferredPrompt=null;
-window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; document.getElementById("installBtn").hidden=false; });
-document.getElementById("installBtn").addEventListener("click",async()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; document.getElementById("installBtn").hidden=true; });
-window.addEventListener("appinstalled",()=>{ document.getElementById("installBtn").hidden=true; });
+const isInstalled=()=>matchMedia("(display-mode: standalone)").matches || navigator.standalone===true;
+function installHelp(){
+  const ua=navigator.userAgent, ios=/iPhone|iPad|iPod/i.test(ua), android=/Android/i.test(ua);
+  const steps = ios
+    ? "<li>Open this page in <b>Safari</b> (if you came from WhatsApp, tap <b>…</b> or the compass icon → <b>Open in Safari</b>).</li><li>Tap <b>Share</b> (the square with the arrow).</li><li>Tap <b>Add to Home Screen</b> → <b>Add</b>.</li>"
+    : android
+    ? "<li>If you came from WhatsApp, tap <b>⋮</b> → <b>Open in Chrome</b>.</li><li>In Chrome, tap <b>⋮</b> (top right).</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b> → <b>Install</b>.</li>"
+    : "<li>In Chrome or Edge, click the <b>install icon</b> at the right of the address bar,</li><li>or <b>⋮ / ⋯</b> → <b>Install</b> / <b>Apps → Install this site as an app</b>.</li>";
+  let box=document.getElementById("installHelp");
+  if(!box){ box=document.createElement("div"); box.id="installHelp";
+    box.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:99;padding:16px";
+    box.addEventListener("click",e=>{ if(e.target===box||e.target.dataset.close!==undefined) box.remove(); }); document.body.appendChild(box); }
+  box.innerHTML=`<div style="background:var(--surface,#fff);color:var(--ink,#222);border-radius:16px;padding:18px;max-width:440px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.25)">
+    <h3 style="margin:0 0 8px">📲 Keep this app on your phone</h3><p class="muted" style="margin:0 0 8px">Then you can always book, pay and see your dog's photos – even if the WhatsApp message is gone.</p>
+    <ol style="margin:0 0 12px;padding-left:20px;line-height:1.6">${steps}</ol><button type="button" class="btn primary" data-close style="width:100%">OK</button></div>`;
+}
+function showInstall(){ const b=document.getElementById("installBtn"); b.hidden=isInstalled(); b.textContent="📲 Install app"; }
+showInstall();
+window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; showInstall(); });
+document.getElementById("installBtn").addEventListener("click",async()=>{
+  if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; return; }
+  installHelp();
+});
+window.addEventListener("appinstalled",()=>{ document.getElementById("installBtn").hidden=true; const h=document.getElementById("installHelp"); if(h) h.remove(); });
 </script>
 </body>
 </html>
